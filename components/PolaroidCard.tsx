@@ -60,7 +60,7 @@ const PolaroidCard: React.FC<PolaroidCardProps> = ({ imageUrl, caption, status, 
                                 <button
                                     onClick={() => onDownload(caption)}
                                     className="p-2 bg-black/60 rounded-full text-white hover:bg-brand-blue/80 focus:outline-none focus:ring-2 focus:ring-brand-blue"
-                                    aria-label={`Download image for ${caption}`}
+                                    aria-label={`Get image for ${caption} by email`}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

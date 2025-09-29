@@ -35,18 +35,19 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
                 </p>
                 <ul>
                     <li><strong>Name:</strong> To personalize your experience.</li>
-                    <li><strong>Email Address:</strong> To grant you access to the application and occasionally send important information about our services.</li>
+                    <li><strong>Email Address:</strong> We collect your email address to establish a session for your creation. After you've generated and purchased your images or album, we will use this email address to send the final files directly to your inbox.</li>
                 </ul>
 
                 <h2 className="font-display text-2xl text-brand-brown pt-4">2. How We Use Your Information</h2>
                 <p>
-                    We use the information we collect to:
+                    We use the information we collect for the following purposes:
                 </p>
                 <ul>
-                    <li>Provide, operate, and maintain our service.</li>
-                    <li>Improve, personalize, and expand our service.</li>
-                    <li>Understand and analyze how you use our service.</li>
-                    <li>Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the service, and for marketing and promotional purposes.</li>
+                    <li><strong>To Deliver Your Creations:</strong> The main reason we ask for your email is to send you the final, high-quality generated image(s) or the complete album directly to your inbox. This ensures you have a permanent copy for safekeeping.</li>
+                    <li>To provide, operate, and maintain our service.</li>
+                    <li>To improve and personalize your experience.</li>
+                    <li>To understand how our service is used, which helps us make it better.</li>
+                    <li>To communicate with you for customer service purposes and to provide you with updates relating to the service.</li>
                 </ul>
                 
                 <h2 className="font-display text-2xl text-brand-brown pt-4">3. Data Storage and Security</h2>

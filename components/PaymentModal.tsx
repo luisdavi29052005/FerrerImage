@@ -4,7 +4,7 @@
 */
 import React from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 import type { PaymentRequest } from '../App';
 
 const backdropVariants: Variants = {
@@ -32,7 +32,6 @@ interface PaymentModalProps {
     onPaymentSuccess: () => void;
 }
 
-const PAYPAL_CLIENT_ID = "AYucRh_ucyNSFRytjKrlIVxnPcW0RB5ORyRi6Vzb_9JEurBauAWQTDDd7_fXp0Yl-7MvHCg2fV4G9MTd";
 const PRICES = {
     single: '0.99',
     album: '3.99'
@@ -40,11 +39,6 @@ const PRICES = {
 
 const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPaymentSuccess }) => {
     
-    if (!PAYPAL_CLIENT_ID) {
-        console.error("PayPal Client ID is not set.");
-        return null;
-    }
-
     const price = request ? PRICES[request.type] : '0.00';
     const description = request?.type === 'single'
         ? `Single Image Download - ${request.decade}`
@@ -80,44 +74,42 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                         </div>
                         
                         <div className="w-full">
-                            <PayPalScriptProvider options={{ 'client-id': PAYPAL_CLIENT_ID, currency: "USD", intent: "capture" }}>
-                                <PayPalButtons
-                                    style={{ layout: "vertical", shape: 'rect', label: 'pay' }}
-                                    createOrder={(data, actions) => {
-                                        return actions.order.create({
-                                            purchase_units: [{
-                                                description: description,
-                                                amount: {
-                                                    currency_code: "USD",
-                                                    value: price,
-                                                }
-                                            }]
-                                        });
-                                    }}
-                                    onApprove={async (data, actions) => {
-                                        try {
-                                            const order = await actions.order.capture();
-                                            console.log("Payment successful:", order);
-                                            onPaymentSuccess();
-                                        } catch (error) {
-                                            console.error("Error capturing order: ", error);
-                                            alert("There was an issue confirming your payment. Please try again.");
-                                        } finally {
-                                            onClose();
-                                        }
-                                    }}
-                                    onError={(err) => {
-                                        console.error("PayPal Error:", err);
-                                        alert("An error occurred with your payment. Please try again or use a different payment method.");
+                            <PayPalButtons
+                                style={{ layout: "vertical", shape: 'rect', label: 'pay' }}
+                                createOrder={(data, actions) => {
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            description: description,
+                                            amount: {
+                                                currency_code: "USD",
+                                                value: price,
+                                            }
+                                        }]
+                                    });
+                                }}
+                                onApprove={async (data, actions) => {
+                                    try {
+                                        const order = await actions.order.capture();
+                                        console.log("Payment successful:", order);
+                                        onPaymentSuccess();
+                                    } catch (error) {
+                                        console.error("Error capturing order: ", error);
+                                        alert("There was an issue confirming your payment. Please try again.");
+                                    } finally {
                                         onClose();
-                                    }}
-                                    onCancel={() => {
-                                        console.log("Payment cancelled by user.");
-                                        onClose();
-                                    }}
-                                    key={request.type + (request.decade || '')} // Force re-render on request change
-                                />
-                            </PayPalScriptProvider>
+                                    }
+                                }}
+                                onError={(err) => {
+                                    console.error("PayPal Error:", err);
+                                    alert("An error occurred with your payment. Please try again or use a different payment method.");
+                                    onClose();
+                                }}
+                                onCancel={() => {
+                                    console.log("Payment cancelled by user.");
+                                    onClose();
+                                }}
+                                key={request.type + (request.decade || '')} // Force re-render on request change
+                            />
                         </div>
 
                          <button

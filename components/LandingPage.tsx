@@ -7,7 +7,7 @@ import { addLead } from '../services/supabaseService';
 import { motion } from 'framer-motion';
 
 interface LandingPageProps {
-    onSubmitSuccess: () => void;
+    onSubmitSuccess: (email: string) => void;
     onShowPrivacyPolicy: () => void;
 }
 
@@ -42,7 +42,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSubmitSuccess, onShowPrivac
             await addLead({ name, email });
             // Wait a moment to show success before transitioning
             setTimeout(() => {
-                onSubmitSuccess();
+                onSubmitSuccess(email);
             }, 500);
         } catch (err) {
             setError("Something went wrong. Please try again later.");

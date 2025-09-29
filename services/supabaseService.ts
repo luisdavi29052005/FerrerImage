@@ -4,8 +4,8 @@
 */
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = "https://lqidbjoxzweinrcywlxf.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxaWRiam94endlaW5yY3l3bHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNjk5NjcsImV4cCI6MjA3NDc0NTk2N30.oAHJ-trf0V5wANBH1MGtPy2DYgn2tp9tSayZ9BHgi5k";
 
 let supabase: SupabaseClient | null = null;
 
@@ -21,20 +21,6 @@ interface Lead {
 }
 
 export const addLead = async (lead: Lead) => {
-  // MOCK IMPLEMENTATION:
-  // The original Supabase logic is commented out for development.
-  // This mock function simulates a successful lead capture without needing a real database connection.
-  console.log('Mock addLead called with:', lead);
-
-  // Simulate a network delay for a more realistic user experience.
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Return a mock success response. The actual data structure isn't critical
-  // for the landing page logic, as it only checks for success/failure.
-  return [{ ...lead, id: 1, created_at: new Date().toISOString() }];
-
-  /*
-  // ORIGINAL SUPABASE LOGIC:
   if (!supabase) {
     // This error will be caught by the form submission logic in LandingPage.tsx
     throw new Error('Supabase client is not initialized. Please check your environment variables.');
@@ -57,5 +43,4 @@ export const addLead = async (lead: Lead) => {
   }
 
   return data;
-  */
 };
