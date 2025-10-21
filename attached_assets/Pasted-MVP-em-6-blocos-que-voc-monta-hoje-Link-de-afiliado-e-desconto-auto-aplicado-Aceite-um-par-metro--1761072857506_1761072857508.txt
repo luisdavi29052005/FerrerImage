@@ -1,0 +1,166 @@
+MVP em 6 blocos que você monta hoje
+
+Link de afiliado e desconto auto-aplicado
+
+Aceite um parâmetro ref na URL. Exemplo: ferrer-image.vercel.app/?ref=GRUPO123
+
+Ao entrar, salve ref em cookie e em session storage com validade de 30 dias
+
+Aplique desconto de 20 por cento no checkout quando houver cookie de ref
+
+Mostre um selo visual “20 por cento off por Grupo NomeDoGrupo” no preço
+
+Prévia gratuita com marca d’água
+
+Depois do upload, gere 1 imagem de prévia em baixa resolução com watermark
+
+Tela de prévia com CTA “Comprar álbum por R$ 19,90” ou “R$ 15,92 com desconto aplicado”
+
+Checkout rápido
+
+Stripe: crie o produto “Álbum 6 Eras”. Preço R$ 19,90
+
+Cupom dinâmico em tempo real: se houver cookie de ref, aplique 20 por cento
+
+Ative Apple Pay, Google Pay e Pix pelo Stripe para reduzir fricção
+
+Ao pagar, webhook do Stripe cria Order, atrela ref capturado e dispara a geração das 6 imagens em alta
+
+Geração e entrega
+
+Job assíncrono inicia 6 gerações por eras definidas
+
+Página de obrigado com barra de progresso. Libere download quando terminar
+
+Salve as 6 URLs finais. Permita re-download por e-mail enviado ao cliente
+
+Comissões do afiliado
+
+Na confirmação de pagamento, calcule a base de comissão
+
+Default seguro para margem: 30 por cento. Ative 50 por cento manualmente por grupo top
+
+Coloque a comissão como pending com hold de 7 dias para anti-fraude
+
+Depois do hold, marque como locked. Pague mensalmente e marque paid
+
+Dashboards mínimos hoje
+
+Seu painel: pedidos, receita, taxa de conversão, prévias vistas, comissões a pagar, links de afiliado
+
+Painel do afiliado: cliques, uploads, prévias, vendas, comissão pendente e paga, botão copiar link, materiais prontos de divulgação
+
+Tabelas mínimas que você cria agora
+
+Leads
+id, created_at, email, name
+
+Affiliates
+id, created_at, owner_name, email, tier_percent, status, payout_info
+
+RefLinks
+id, affiliate_id, code, created_at, is_active
+
+Discounts
+id, code, percent, is_active, valid_from, valid_to
+
+Orders
+id, created_at, lead_id, total_gross, discount_percent, total_net, currency, status, stripe_payment_intent, ref_link_id
+
+Commissions
+id, created_at, affiliate_id, order_id, base_amount, percent, value, status, locked_at, paid_at
+
+Uploads
+id, created_at, lead_id, original_url, quality_score, moderation_status
+
+Generations
+id, created_at, upload_id, model, prompt, status, cost_estimate
+
+GeneratedImages
+id, created_at, generation_id, era, preview_url, full_url, watermarked
+
+AttributionRules
+id, name, cookie_days, model_first_click boolean, created_at
+
+observação
+
+ref_link_id em Orders garante a atribuição server-side
+
+status da Commission: pending, locked, paid
+
+Endpoints simples para o App Router do Next que você liga hoje
+
+POST /api/affiliates/create_link
+cria código ref para um afiliado
+
+GET /api/affiliates/me/stats
+retorna métricas do afiliado autenticado
+
+POST /api/checkout/session
+cria sessão Stripe e aplica desconto se existir cookie ref
+
+POST /api/webhooks/stripe
+valida assinatura, cria Order, registra comissão e dispara job das 6 eras
+
+POST /api/upload/init
+retorna URL pré-assinada para upload
+
+POST /api/generate/preview
+dispara a prévia com marca d’água
+
+POST /api/generate/final
+dispara as 6 imagens após pagamento
+
+Telas do dashboard
+
+Seu painel
+
+KPI cards: Receita hoje, Vendas, Taxa de conversão, Comissão pendente
+
+Tabela de pedidos com filtro por ref
+
+Tabela de afiliados com tier, taxa, total pago
+
+Ação rápida: gerar link de afiliado, ativar 50 por cento para parceiro específico
+
+Relatório CSV de comissões para pagamento
+
+Painel do afiliado
+
+Card com link e botão “copiar”
+
+Gráfico simples de cliques e vendas
+
+Tabela de comissões com status pending, locked, paid
+
+Materiais: 3 imagens exemplo, 3 textos prontos, QR code do link
+
+UI e UX que aumentam conversão
+
+Hero direto: Transforme 1 foto em 6 eras em minutos
+
+Seção “Como funciona” em 3 passos com ícones
+
+Prova social: 3 depoimentos curtos e carrossel com antes e depois
+
+Indicadores de estado e skeletons durante geração
+
+Pré-visualização gratuita imediata. CTA fixo comprar
+
+Cupom auto-aplicado quando vier de ref
+
+Precificação sempre visível. Mostre o preço cheio e o preço com desconto ativado
+
+Dark mode e mobile first. Acessibilidade com aria-live e foco visível
+
+Segurança, LGPD e antifraude
+
+Consentimento explícito para uso somente para a geração. Sem treino do modelo por padrão
+
+Upload via URL pré-assinada, varredura antivírus e CSP rígida
+
+Hold de 7 dias antes de liberar comissão
+
+Bloqueio de auto-referência e múltiplas contas. Deduplicação por e-mail e device id
+
+Webhooks Stripe com verificação de assinatura. Logs de auditoria
