@@ -343,23 +343,54 @@ function App() {
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.8 }}
                                             transition={{ duration: 0.5, type: 'spring' }}
-                                            className="flex flex-col items-center w-full max-w-md"
+                                            className="flex flex-col items-center w-full max-w-2xl"
                                         >
+                                            <div className="text-center mb-8">
+                                                <h3 className="font-display text-3xl text-brand-brown mb-2">
+                                                    Faça o upload da sua foto
+                                                </h3>
+                                                <p className="font-body text-brand-brown/70">
+                                                    Aceitamos JPG, PNG e WEBP • Mínimo 1024px • Máximo 10MB
+                                                </p>
+                                            </div>
+
                                             <label htmlFor="file-upload" className="w-full cursor-pointer group transition-transform duration-300">
-                                                <div className="border-2 border-dashed border-brand-brown/50 rounded-lg p-8 text-center bg-vintage-paper/50 hover:bg-white/50 hover:border-brand-brown transition-colors duration-300 flex flex-col items-center justify-center aspect-square">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-brand-brown/70 group-hover:text-brand-brown transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v2m-4-2h8m4 14v2m-4-2h8" />
+                                                <div className="border-2 border-dashed border-brand-brown/50 rounded-lg p-12 text-center bg-vintage-paper/50 hover:bg-white/50 hover:border-brand-brown transition-colors duration-300 flex flex-col items-center justify-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-brand-brown/70 group-hover:text-brand-brown transition-colors mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                                     </svg>
-                                                    <span className="font-display text-2xl mt-4 text-brand-brown">Upload a Photo</span>
-                                                    <p className="mt-2 font-body text-brand-brown/70">Click or drag your image here to begin.</p>
+                                                    <span className="font-display text-2xl text-brand-brown mb-2">Selecionar Foto</span>
+                                                    <p className="font-body text-sm text-brand-brown/60">ou arraste e solte aqui</p>
                                                 </div>
                                             </label>
                                             <input id="file-upload" type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={handleImageUpload} />
-                                             <p className="mt-8 font-body text-brand-brown/80 text-center max-w-xs text-lg">
-                                                Choose a clear, well-lit photo of a face for the best results.
-                                            </p>
+                                            
+                                            <div className="mt-8 bg-brand-blue/5 rounded-lg p-6 w-full">
+                                                <h4 className="font-body font-bold text-brand-brown mb-3 flex items-center gap-2">
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    Dicas para melhores resultados:
+                                                </h4>
+                                                <ul className="space-y-2 font-body text-sm text-brand-brown/70">
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-brand-blue mt-0.5">•</span>
+                                                        Use uma foto com boa iluminação e o rosto bem visível
+                                                    </li>
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-brand-blue mt-0.5">•</span>
+                                                        Evite fotos muito escuras, borradas ou de longe
+                                                    </li>
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-brand-blue mt-0.5">•</span>
+                                                        Fotos de frente ou levemente de lado funcionam melhor
+                                                    </li>
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-brand-blue mt-0.5">•</span>
+                                                        <strong>Importante:</strong> Após a compra, você receberá as imagens no email fornecido no checkout
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </motion.div>
                                     )}
 
