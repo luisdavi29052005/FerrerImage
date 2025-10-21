@@ -31,9 +31,9 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-brand-orange text-vintage-paper py-2 px-4 text-center font-body text-sm"
+                    className="bg-brand-orange text-vintage-paper py-2 px-4 text-center font-body text-sm font-bold"
                 >
-                    🎉 Você ganhou 20% de desconto, cortesia de {refGroupName}. Cupom auto aplicado!
+                    🎉 20% OFF aplicado por {refGroupName}
                 </motion.div>
             )}
 
@@ -41,22 +41,23 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
             <header className="sticky top-0 z-50 bg-vintage-paper/95 backdrop-blur-sm border-b border-brand-brown/10 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                     <div className="font-display text-2xl text-brand-brown">Image Ferrer</div>
-                    <nav className="hidden md:flex items-center gap-6">
-                        <button onClick={() => scrollToSection('examples')} className="font-body text-brand-brown hover:text-brand-blue transition-colors">
+                    <nav className="hidden md:flex items-center gap-6" aria-label="Navegação principal">
+                        <button onClick={() => scrollToSection('examples')} className="font-body text-brand-brown hover:text-brand-blue transition-colors" aria-label="Ver exemplos de fotos">
                             Ver exemplos
                         </button>
-                        <button onClick={() => scrollToSection('pricing')} className="font-body text-brand-brown hover:text-brand-blue transition-colors">
+                        <button onClick={() => scrollToSection('pricing')} className="font-body text-brand-brown hover:text-brand-blue transition-colors" aria-label="Ver preço do álbum">
                             Preço
                         </button>
-                        <button onClick={() => scrollToSection('faq')} className="font-body text-brand-brown hover:text-brand-blue transition-colors">
+                        <button onClick={() => scrollToSection('faq')} className="font-body text-brand-brown hover:text-brand-blue transition-colors" aria-label="Perguntas frequentes">
                             FAQ
                         </button>
                         <button
                             onClick={onGetStarted}
-                            className="font-body bg-brand-brown text-vintage-paper px-6 py-2 rounded-md hover:bg-opacity-90 transition-all shadow-md"
+                            className="font-body bg-brand-brown text-vintage-paper px-6 py-2 rounded-md hover:bg-opacity-90 transition-all shadow-md min-h-[44px]"
+                            aria-label="Começar a gerar suas 6 eras"
                         >
                             Gerar minhas 6 eras
-                            {refGroupName && <span className="ml-2 text-xs">20% off</span>}
+                            {refGroupName && <span className="ml-2 text-xs" aria-label="20 por cento de desconto">20% off</span>}
                         </button>
                     </nav>
                 </div>
@@ -88,17 +89,28 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                     >
                         <button
                             onClick={onGetStarted}
-                            className="font-body text-lg bg-brand-brown text-vintage-paper px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg w-full sm:w-auto"
+                            className="font-body text-lg bg-brand-brown text-vintage-paper px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg w-full sm:w-auto min-h-[44px]"
                         >
-                            Gerar minhas 6 eras
+                            Enviar foto agora
+                            {refGroupName && <span className="ml-2 text-sm">• 20% off</span>}
                         </button>
                         <button
                             onClick={() => scrollToSection('examples')}
-                            className="font-body text-lg border-2 border-brand-blue text-brand-brown px-8 py-4 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all w-full sm:w-auto"
+                            className="font-body text-lg border-2 border-brand-blue text-brand-brown px-8 py-4 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all w-full sm:w-auto min-h-[44px]"
                         >
                             Ver exemplos reais
                         </button>
                     </motion.div>
+                    
+                    {/* Requisitos mínimos */}
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-sm text-brand-brown/60 font-body mt-3"
+                    >
+                        Rosto visível • Boa iluminação • Mínimo 1024px • JPG ou PNG
+                    </motion.p>
 
                     {/* Microconfiança */}
                     <motion.div
@@ -123,8 +135,29 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
                             </svg>
-                            Suporte em português
+                            Não usamos suas fotos para treinar IA
                         </div>
+                    </motion.div>
+                    
+                    {/* Microdepoimento */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="mt-8 bg-white/50 rounded-lg p-4 max-w-md mx-auto border border-brand-brown/10"
+                    >
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-10 h-10 bg-brand-blue/20 rounded-full flex items-center justify-center">
+                                <span className="font-display text-lg text-brand-brown">M</span>
+                            </div>
+                            <div>
+                                <div className="font-body font-bold text-sm text-brand-brown">Maria Silva</div>
+                                <div className="text-xs text-brand-brown/60">há 2 dias</div>
+                            </div>
+                        </div>
+                        <p className="font-body text-sm text-brand-brown/80 italic">
+                            "Incrível! Parecia que eu tinha viajado no tempo de verdade. 🕰️"
+                        </p>
                     </motion.div>
                 </div>
 
@@ -162,6 +195,42 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                             <div className="font-display text-4xl text-brand-brown">2-3min</div>
                             <div className="font-body text-brand-brown/70 mt-1">Tempo de entrega</div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Para quem é perfeito */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
+                    Para quem é perfeito
+                </h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="text-center bg-white rounded-lg p-6 shadow-md">
+                        <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-brand-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="font-display text-xl text-brand-brown mb-2">Presente para família</h3>
+                        <p className="font-body text-brand-brown/70 text-sm">Surpreenda com um álbum único de diferentes épocas</p>
+                    </div>
+                    <div className="text-center bg-white rounded-lg p-6 shadow-md">
+                        <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-brand-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="font-display text-xl text-brand-brown mb-2">Recordações de época</h3>
+                        <p className="font-body text-brand-brown/70 text-sm">Veja-se nas roupas e estilos de décadas passadas</p>
+                    </div>
+                    <div className="text-center bg-white rounded-lg p-6 shadow-md">
+                        <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-brand-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 className="font-display text-xl text-brand-brown mb-2">Posts criativos</h3>
+                        <p className="font-body text-brand-brown/70 text-sm">Conteúdo original e engajador para suas redes sociais</p>
                     </div>
                 </div>
             </section>
@@ -222,13 +291,20 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                         <h2 className="font-display text-3xl text-brand-brown text-center mb-6">
                             Álbum com 6 imagens
                         </h2>
-                        <div className="text-center mb-8">
+                        <div className="text-center mb-8 relative">
+                            {refGroupName && (
+                                <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
+                                    <div className="bg-brand-orange text-vintage-paper px-4 py-1 rounded-full text-xs font-body font-bold shadow-md">
+                                        20% OFF • {refGroupName}
+                                    </div>
+                                </div>
+                            )}
                             {refGroupName ? (
                                 <>
-                                    <div className="text-2xl text-brand-brown/50 line-through">R$ 19,90</div>
+                                    <div className="text-2xl text-brand-brown/50 line-through mb-1">R$ 19,90</div>
                                     <div className="font-display text-5xl text-brand-brown mb-2">R$ 15,92</div>
-                                    <div className="inline-block bg-brand-orange text-vintage-paper px-3 py-1 rounded-full text-sm font-body">
-                                        20% off de {refGroupName} aplicado
+                                    <div className="text-sm text-brand-brown/60 font-body">
+                                        Desconto automático aplicado
                                     </div>
                                 </>
                             ) : (
@@ -345,20 +421,40 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                     <p className="font-body text-xl text-vintage-paper/90 mb-8">
                         Ganhe comissões indicando a Image Ferrer
                     </p>
+                    
+                    {/* Exemplo de ganho */}
+                    <div className="bg-vintage-paper/10 rounded-lg p-6 mb-8 max-w-md mx-auto">
+                        <div className="font-display text-3xl text-vintage-paper mb-2">R$ 638,40</div>
+                        <p className="text-vintage-paper/80 font-body text-sm">
+                            Ganho com 100 vendas (comissão de 40%)
+                        </p>
+                    </div>
+                    
                     <ul className="text-left max-w-md mx-auto mb-8 space-y-2 text-vintage-paper/90 font-body">
                         <li>✓ Link exclusivo para seu grupo</li>
                         <li>✓ 20% de desconto automático para membros</li>
                         <li>✓ Comissões até 40%</li>
                         <li>✓ Painel para acompanhar cliques e vendas</li>
                     </ul>
-                    <button className="font-body text-lg bg-vintage-paper text-brand-blue px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg">
+                    <button className="font-body text-lg bg-vintage-paper text-brand-blue px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg min-h-[44px]">
                         Quero ser parceiro
                     </button>
                 </div>
             </section>
 
+            {/* CTA Fixo Mobile */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-vintage-paper border-t border-brand-brown/20 p-4 shadow-lg">
+                <button
+                    onClick={onGetStarted}
+                    className="w-full font-body text-lg bg-brand-brown text-vintage-paper px-6 py-3 rounded-md hover:bg-opacity-90 transition-all shadow-md"
+                >
+                    Gerar minhas 6 eras
+                    {refGroupName && <span className="ml-2 text-sm">• 20% off</span>}
+                </button>
+            </div>
+
             {/* Footer */}
-            <footer className="bg-brand-brown text-vintage-paper py-12">
+            <footer className="bg-brand-brown text-vintage-paper py-12 mb-16 md:mb-0">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid md:grid-cols-3 gap-8 mb-8">
                         <div>
