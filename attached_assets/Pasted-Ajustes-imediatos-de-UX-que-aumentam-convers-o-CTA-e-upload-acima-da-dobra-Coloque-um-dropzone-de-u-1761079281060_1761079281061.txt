@@ -1,0 +1,127 @@
+Ajustes imediatos de UX que aumentam conversão
+
+CTA e upload acima da dobra
+Coloque um dropzone de upload direto no hero ao lado dos botões. Muita gente quer “testar na hora”.
+Mostre requisitos mínimos sob o botão, curto: “Rosto visível, boa luz, mínimo 1024 px”.
+
+Botão fixo no mobile
+Sticky CTA “Gerar minhas 6 eras” fixo no rodapé no mobile. Converte muito.
+
+Selo de desconto dinâmico
+Quando houver ?ref=GRUPO, mostre uma tarja fina no topo “20 por cento OFF aplicado por GRUPO”, e repita a etiqueta perto do preço e do CTA.
+
+Prévia gratuita já na landing
+Depois do upload, renderize 1 prévia com marca d’água ali mesmo, sem sair da página, com CTA “Comprar álbum por R$ 19,90” ou “R$ 15,92 com desconto do seu grupo”.
+
+Prova social colada no hero
+Junte as polaroids e os números de prova social mais para cima, ainda na dobra. E adicione 1 microdepoimento curtíssimo com foto e nome.
+
+“Ver exemplos reais” melhorado
+Faça esse botão rolar para uma grade de 6 exemplos antes e depois em lightbox. Em cada card, etiqueta com a década.
+
+Microcopys de confiança perto do CTA
+“Privacidade garantida”, “Checkout seguro”, “Suporte em português” já estão lá, ótimo. Acrescente “Não usamos suas fotos para treinar IA sem consentimento”.
+
+UI e microinterações
+
+Barra de progresso e skeleton
+Mostre “Enviando foto…”, “Analisando…”, “Prévia pronta” com barra de progresso.
+
+Estados de erro úteis
+“Foto muito escura. Tente aproximar-se de uma janela ou ligar a luz”.
+
+Hierarquia visual
+Dê mais contraste ao CTA principal. Exemplo: botão sólido e secundário com borda.
+Use um “badge” pequeno no preço com o desconto aplicado quando vier por ref.
+
+Responsivo
+Garanta que as polaroids tenham scroll horizontal suave no mobile, com “snap”.
+
+Seções novas sugeridas
+
+“Para quem é perfeito”
+3 cartões: Presente para família, Recordações de época, Posts criativos. Curto e direto.
+
+“Veja a mágica acontecer” com vídeo curto
+Um loop de 8 a 10 segundos mostrando a transição da foto original para as 6 eras, com legenda “Prévia grátis antes de pagar”.
+
+Checkout e cupom
+
+Cupom auto-aplicado invisível quando houver ref.
+Deixe “Tenho cupom” recolhido para não distrair.
+
+Mostre preço riscado e total com desconto no card do preço.
+
+Acessibilidade e mobile
+
+Adicione aria-live nas mensagens de status de upload e geração.
+
+Alt text descritivo nas polaroids por década.
+
+Tamanho de toque mínimo de 44 px nos botões.
+
+Foco visível para teclado.
+
+Performance e SEO
+
+Otimize LCP do hero: carregue imagens em AVIF/WEBP, use next/image com prioridade só no que aparece na dobra.
+
+Preconnect para fontes, e se possível fonte local para evitar FOUT.
+
+Title e description específicos, OG image com as 6 eras, JSON-LD Product com preço.
+
+Lazy load nas seções de exemplos e depoimentos.
+
+Bloco de afiliados
+
+Inclua “Exemplo de ganho” ali mesmo
+“Com 100 vendas no seu link você recebe R$ 638,40 com comissão de 40 por cento”. Dá noção de valor.
+
+Botão “Quero ser parceiro” leva para um onboarding simples com e-mail e nome do grupo.
+
+Analytics que não podem faltar
+
+upload_started, preview_generated, ref_detected, discount_applied, checkout_started, payment_success, album_delivered, affiliate_signup_click.
+
+A/B que eu testaria primeiro
+
+CTA do hero: “Gerar minhas 6 eras” vs “Ver minha prévia grátis”.
+
+Desconto do afiliado: 15 por cento vs 20 por cento.
+
+Card do preço sozinho vs com lista de benefícios em bullets.
+
+Textos prontos para colar
+
+Título do hero
+“Transforme 1 foto em 6 versões de épocas diferentes, em minutos.”
+
+Sub
+“Pré-visualização gratuita, desconto automático no seu link, entrega segura.”
+
+Dica do upload
+“Rosto visível, boa iluminação, mínimo 1024 px. JPG ou PNG.”
+
+Botões
+“Gerar minhas 6 eras”
+“Ver exemplos reais”
+“Enviar foto”
+“Comprar álbum por R$ 19,90”
+Quando houver ref: “Comprar agora por R$ 15,92”
+
+Benefícios no card de preço
+“Entrega em 2 a 3 minutos”
+“Imagens em alta resolução”
+“Uso livre em redes sociais”
+“1 ajuste gratuito em até 24 horas”
+
+Garantia curta
+“Se não estiver satisfeito, peça 1 revisão em até 24 horas.”
+
+Detalhes finais
+
+Coloque um link “Apagar minhas fotos” no rodapé e na página de conta para confiança.
+
+Adicione WhatsApp de suporte com horário de atendimento.
+
+Consistência do valor: sempre “R$ 19,90” no site inteiro.
