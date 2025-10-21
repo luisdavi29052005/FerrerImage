@@ -1,19 +1,21 @@
-
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { getRefGroupName } from '../lib/affiliateUtils';
-import PreviewUpload from './PreviewUpload';
+ */
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { getRefGroupName } from "../lib/affiliateUtils";
+import PreviewUpload from "./PreviewUpload";
 
 interface NewLandingPageProps {
     onGetStarted: () => void;
     onPreviewPurchase?: (uploadedImage: string) => void;
 }
 
-const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreviewPurchase }) => {
+const NewLandingPage: React.FC<NewLandingPageProps> = ({
+    onGetStarted,
+    onPreviewPurchase,
+}) => {
     const [refGroupName, setRefGroupName] = useState<string | null>(null);
 
     useEffect(() => {
@@ -31,7 +33,7 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
-        element?.scrollIntoView({ behavior: 'smooth' });
+        element?.scrollIntoView({ behavior: "smooth" });
     };
 
     return (
@@ -50,15 +52,32 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
             {/* Header Fixo */}
             <header className="sticky top-0 z-50 bg-vintage-paper/95 backdrop-blur-sm border-b border-brand-brown/10 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-                    <div className="font-display text-2xl text-brand-brown">Image Ferrer</div>
-                    <nav className="hidden md:flex items-center gap-6" aria-label="Navegação principal">
-                        <button onClick={() => scrollToSection('examples')} className="font-body text-brand-brown hover:text-brand-blue transition-colors" aria-label="Ver exemplos de fotos">
+                    <div className="font-display text-2xl text-brand-brown">
+                        Image Ferrer
+                    </div>
+                    <nav
+                        className="hidden md:flex items-center gap-6"
+                        aria-label="Navegação principal"
+                    >
+                        <button
+                            onClick={() => scrollToSection("examples")}
+                            className="font-body text-brand-brown hover:text-brand-blue transition-colors"
+                            aria-label="Ver exemplos de fotos"
+                        >
                             Ver exemplos
                         </button>
-                        <button onClick={() => scrollToSection('pricing')} className="font-body text-brand-brown hover:text-brand-blue transition-colors" aria-label="Ver preço do álbum">
+                        <button
+                            onClick={() => scrollToSection("pricing")}
+                            className="font-body text-brand-brown hover:text-brand-blue transition-colors"
+                            aria-label="Ver preço do álbum"
+                        >
                             Preço
                         </button>
-                        <button onClick={() => scrollToSection('faq')} className="font-body text-brand-brown hover:text-brand-blue transition-colors" aria-label="Perguntas frequentes">
+                        <button
+                            onClick={() => scrollToSection("faq")}
+                            className="font-body text-brand-brown hover:text-brand-blue transition-colors"
+                            aria-label="Perguntas frequentes"
+                        >
                             FAQ
                         </button>
                         <button
@@ -67,7 +86,14 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                             aria-label="Começar a gerar suas 6 eras"
                         >
                             Gerar minhas 6 eras
-                            {refGroupName && <span className="ml-2 text-xs" aria-label="20 por cento de desconto">20% off</span>}
+                            {refGroupName && (
+                                <span
+                                    className="ml-2 text-xs"
+                                    aria-label="20 por cento de desconto"
+                                >
+                                    20% off
+                                </span>
+                            )}
                         </button>
                     </nav>
                 </div>
@@ -81,7 +107,8 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                         animate={{ opacity: 1, y: 0 }}
                         className="font-display text-5xl md:text-7xl text-brand-brown mb-6"
                     >
-                        Transforme 1 foto em 6 versões de épocas diferentes, em minutos
+                        Transforme 1 foto em 6 versões de épocas diferentes, em
+                        minutos
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -89,7 +116,8 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                         transition={{ delay: 0.1 }}
                         className="font-body text-xl md:text-2xl text-brand-brown/80 mb-8"
                     >
-                        Pré-visualização gratuita, desconto automático no seu link, entrega segura.
+                        Pré-visualização gratuita, desconto automático no seu
+                        link, entrega segura.
                     </motion.p>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -102,16 +130,18 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                             className="font-body text-lg bg-brand-brown text-vintage-paper px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg w-full sm:w-auto min-h-[44px]"
                         >
                             Enviar foto agora
-                            {refGroupName && <span className="ml-2 text-sm">• 20% off</span>}
+                            {refGroupName && (
+                                <span className="ml-2 text-sm">• 20% off</span>
+                            )}
                         </button>
                         <button
-                            onClick={() => scrollToSection('examples')}
+                            onClick={() => scrollToSection("examples")}
                             className="font-body text-lg border-2 border-brand-blue text-brand-brown px-8 py-4 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all w-full sm:w-auto min-h-[44px]"
                         >
                             Ver exemplos reais
                         </button>
                     </motion.div>
-                    
+
                     {/* Requisitos mínimos */}
                     <motion.p
                         initial={{ opacity: 0 }}
@@ -119,7 +149,8 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                         transition={{ delay: 0.3 }}
                         className="text-sm text-brand-brown/60 font-body mt-3"
                     >
-                        Rosto visível • Boa iluminação • Mínimo 1024px • JPG ou PNG
+                        Rosto visível • Boa iluminação • Mínimo 1024px • JPG ou
+                        PNG
                     </motion.p>
 
                     {/* Upload com Prévia Gratuita */}
@@ -129,7 +160,9 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                         transition={{ delay: 0.35 }}
                         className="mt-12"
                     >
-                        <PreviewUpload onPurchaseClick={handlePreviewPurchase} />
+                        <PreviewUpload
+                            onPurchaseClick={handlePreviewPurchase}
+                        />
                     </motion.div>
 
                     {/* Microconfiança */}
@@ -140,25 +173,55 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                         className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-brand-brown/70 font-body"
                     >
                         <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                />
                             </svg>
                             Privacidade garantida
                         </div>
                         <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
                             </svg>
                             Checkout seguro
                         </div>
                         <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
+                                />
                             </svg>
                             Não usamos suas fotos para treinar IA
                         </div>
                     </motion.div>
-                    
+
                     {/* Microdepoimento */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -168,15 +231,22 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                     >
                         <div className="flex items-center gap-3 mb-2">
                             <div className="w-10 h-10 bg-brand-blue/20 rounded-full flex items-center justify-center">
-                                <span className="font-display text-lg text-brand-brown">M</span>
+                                <span className="font-display text-lg text-brand-brown">
+                                    M
+                                </span>
                             </div>
                             <div>
-                                <div className="font-body font-bold text-sm text-brand-brown">Maria Silva</div>
-                                <div className="text-xs text-brand-brown/60">há 2 dias</div>
+                                <div className="font-body font-bold text-sm text-brand-brown">
+                                    Maria Silva
+                                </div>
+                                <div className="text-xs text-brand-brown/60">
+                                    há 2 dias
+                                </div>
                             </div>
                         </div>
                         <p className="font-body text-sm text-brand-brown/80 italic">
-                            "Incrível! Parecia que eu tinha viajado no tempo de verdade. 🕰️"
+                            "Incrível! Parecia que eu tinha viajado no tempo de
+                            verdade. 🕰️"
                         </p>
                     </motion.div>
                 </div>
@@ -188,14 +258,23 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                     transition={{ delay: 0.4 }}
                     className="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
                 >
-                    {['1950s', '1960s', '1970s', '1980s', '1990s', '2000s'].map((decade, i) => (
-                        <div key={decade} className="bg-white p-3 shadow-lg transform rotate-1 hover:rotate-0 transition-transform">
-                            <div className="bg-gray-200 aspect-square rounded flex items-center justify-center">
-                                <span className="font-handwriting text-2xl text-gray-400">{decade}</span>
+                    {["1950s", "1960s", "1970s", "1980s", "1990s", "2000s"].map(
+                        (decade, i) => (
+                            <div
+                                key={decade}
+                                className="bg-white p-3 shadow-lg transform rotate-1 hover:rotate-0 transition-transform"
+                            >
+                                <div className="bg-gray-200 aspect-square rounded flex items-center justify-center">
+                                    <span className="font-handwriting text-2xl text-gray-400">
+                                        {decade}
+                                    </span>
+                                </div>
+                                <div className="mt-2 font-handwriting text-center text-brand-brown">
+                                    {decade}
+                                </div>
                             </div>
-                            <div className="mt-2 font-handwriting text-center text-brand-brown">{decade}</div>
-                        </div>
-                    ))}
+                        ),
+                    )}
                 </motion.div>
             </section>
 
@@ -204,16 +283,28 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
                         <div>
-                            <div className="font-display text-4xl text-brand-brown">+3.200</div>
-                            <div className="font-body text-brand-brown/70 mt-1">Álbuns gerados</div>
+                            <div className="font-display text-4xl text-brand-brown">
+                                +3.200
+                            </div>
+                            <div className="font-body text-brand-brown/70 mt-1">
+                                Álbuns gerados
+                            </div>
                         </div>
                         <div>
-                            <div className="font-display text-4xl text-brand-brown">4.9/5</div>
-                            <div className="font-body text-brand-brown/70 mt-1">Avaliação média</div>
+                            <div className="font-display text-4xl text-brand-brown">
+                                4.9/5
+                            </div>
+                            <div className="font-body text-brand-brown/70 mt-1">
+                                Avaliação média
+                            </div>
                         </div>
                         <div className="col-span-2 md:col-span-1">
-                            <div className="font-display text-4xl text-brand-brown">2-3min</div>
-                            <div className="font-body text-brand-brown/70 mt-1">Tempo de entrega</div>
+                            <div className="font-display text-4xl text-brand-brown">
+                                2-3min
+                            </div>
+                            <div className="font-body text-brand-brown/70 mt-1">
+                                Tempo de entrega
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -227,67 +318,160 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                 <div className="grid md:grid-cols-3 gap-8">
                     <div className="text-center bg-white rounded-lg p-6 shadow-md">
                         <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-brand-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            <svg
+                                className="w-8 h-8 text-brand-brown"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                                />
                             </svg>
                         </div>
-                        <h3 className="font-display text-xl text-brand-brown mb-2">Presente para família</h3>
-                        <p className="font-body text-brand-brown/70 text-sm">Surpreenda com um álbum único de diferentes épocas</p>
+                        <h3 className="font-display text-xl text-brand-brown mb-2">
+                            Presente para família
+                        </h3>
+                        <p className="font-body text-brand-brown/70 text-sm">
+                            Surpreenda com um álbum único de diferentes épocas
+                        </p>
                     </div>
                     <div className="text-center bg-white rounded-lg p-6 shadow-md">
                         <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-brand-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                                className="w-8 h-8 text-brand-brown"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
                             </svg>
                         </div>
-                        <h3 className="font-display text-xl text-brand-brown mb-2">Recordações de época</h3>
-                        <p className="font-body text-brand-brown/70 text-sm">Veja-se nas roupas e estilos de décadas passadas</p>
+                        <h3 className="font-display text-xl text-brand-brown mb-2">
+                            Recordações de época
+                        </h3>
+                        <p className="font-body text-brand-brown/70 text-sm">
+                            Veja-se nas roupas e estilos de décadas passadas
+                        </p>
                     </div>
                     <div className="text-center bg-white rounded-lg p-6 shadow-md">
                         <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-brand-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            <svg
+                                className="w-8 h-8 text-brand-brown"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
                             </svg>
                         </div>
-                        <h3 className="font-display text-xl text-brand-brown mb-2">Posts criativos</h3>
-                        <p className="font-body text-brand-brown/70 text-sm">Conteúdo original e engajador para suas redes sociais</p>
+                        <h3 className="font-display text-xl text-brand-brown mb-2">
+                            Posts criativos
+                        </h3>
+                        <p className="font-body text-brand-brown/70 text-sm">
+                            Conteúdo original e engajador para suas redes
+                            sociais
+                        </p>
                     </div>
                 </div>
             </section>
 
             {/* Como Funciona */}
-            <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <section
+                id="how-it-works"
+                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+            >
                 <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
                     Como funciona
                 </h2>
                 <div className="grid md:grid-cols-3 gap-8">
                     <div className="text-center">
                         <div className="w-16 h-16 bg-brand-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-vintage-paper" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            <svg
+                                className="w-8 h-8 text-vintage-paper"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                />
                             </svg>
                         </div>
-                        <h3 className="font-display text-2xl text-brand-brown mb-2">1. Envie sua foto</h3>
-                        <p className="font-body text-brand-brown/70">Upload rápido e seguro da sua melhor foto</p>
+                        <h3 className="font-display text-2xl text-brand-brown mb-2">
+                            1. Envie sua foto
+                        </h3>
+                        <p className="font-body text-brand-brown/70">
+                            Upload rápido e seguro da sua melhor foto
+                        </p>
                     </div>
                     <div className="text-center">
                         <div className="w-16 h-16 bg-brand-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-vintage-paper" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <svg
+                                className="w-8 h-8 text-vintage-paper"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
                             </svg>
                         </div>
-                        <h3 className="font-display text-2xl text-brand-brown mb-2">2. Veja a prévia grátis</h3>
-                        <p className="font-body text-brand-brown/70">Prévia com marca d'água antes de comprar</p>
+                        <h3 className="font-display text-2xl text-brand-brown mb-2">
+                            2. Veja a prévia grátis
+                        </h3>
+                        <p className="font-body text-brand-brown/70">
+                            Prévia com marca d'água antes de comprar
+                        </p>
                     </div>
                     <div className="text-center">
                         <div className="w-16 h-16 bg-brand-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-vintage-paper" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                                className="w-8 h-8 text-vintage-paper"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
                             </svg>
                         </div>
-                        <h3 className="font-display text-2xl text-brand-brown mb-2">3. Receba seu álbum</h3>
-                        <p className="font-body text-brand-brown/70">6 imagens em alta qualidade no seu email</p>
+                        <h3 className="font-display text-2xl text-brand-brown mb-2">
+                            3. Receba seu álbum
+                        </h3>
+                        <p className="font-body text-brand-brown/70">
+                            6 imagens em alta qualidade no seu email
+                        </p>
                     </div>
                 </div>
             </section>
@@ -305,7 +489,10 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
             </section>
 
             {/* Preço e Benefícios */}
-            <section id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <section
+                id="pricing"
+                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+            >
                 <div className="max-w-2xl mx-auto">
                     <div className="bg-white rounded-lg shadow-xl p-8 border-2 border-brand-blue">
                         <h2 className="font-display text-3xl text-brand-brown text-center mb-6">
@@ -321,40 +508,94 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                             )}
                             {refGroupName ? (
                                 <>
-                                    <div className="text-2xl text-brand-brown/50 line-through mb-1">R$ 19,90</div>
-                                    <div className="font-display text-5xl text-brand-brown mb-2">R$ 15,92</div>
+                                    <div className="text-2xl text-brand-brown/50 line-through mb-1">
+                                        R$ 19,90
+                                    </div>
+                                    <div className="font-display text-5xl text-brand-brown mb-2">
+                                        R$ 15,92
+                                    </div>
                                     <div className="text-sm text-brand-brown/60 font-body">
                                         Desconto automático aplicado
                                     </div>
                                 </>
                             ) : (
-                                <div className="font-display text-5xl text-brand-brown">R$ 19,90</div>
+                                <div className="font-display text-5xl text-brand-brown">
+                                    R$ 19,90
+                                </div>
                             )}
                         </div>
                         <ul className="space-y-4 mb-8">
                             <li className="flex items-start gap-3">
-                                <svg className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                <svg
+                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
                                 </svg>
-                                <span className="font-body text-brand-brown">Entrega rápida em 2-3 minutos</span>
+                                <span className="font-body text-brand-brown">
+                                    Entrega rápida em 2-3 minutos
+                                </span>
                             </li>
                             <li className="flex items-start gap-3">
-                                <svg className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                <svg
+                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
                                 </svg>
-                                <span className="font-body text-brand-brown">Imagens em alta resolução</span>
+                                <span className="font-body text-brand-brown">
+                                    Imagens em alta resolução
+                                </span>
                             </li>
                             <li className="flex items-start gap-3">
-                                <svg className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                <svg
+                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
                                 </svg>
-                                <span className="font-body text-brand-brown">Uso livre em redes sociais</span>
+                                <span className="font-body text-brand-brown">
+                                    Uso livre em redes sociais
+                                </span>
                             </li>
                             <li className="flex items-start gap-3">
-                                <svg className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                <svg
+                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
                                 </svg>
-                                <span className="font-body text-brand-brown">1 ajuste gratuito em até 24 horas</span>
+                                <span className="font-body text-brand-brown">
+                                    1 ajuste gratuito em até 24 horas
+                                </span>
                             </li>
                         </ul>
                         <button
@@ -364,7 +605,8 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                             Gerar minhas 6 eras agora
                         </button>
                         <p className="text-center text-sm text-brand-brown/60 mt-4 font-body">
-                            Garantia: Se não estiver satisfeito, peça 1 revisão em até 24 horas
+                            Garantia: Se não estiver satisfeito, peça 1 revisão
+                            em até 24 horas
                         </p>
                     </div>
                 </div>
@@ -378,18 +620,36 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                     </h2>
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
-                            { name: 'Maria Silva', text: 'Amei ver minha avó nos anos 60, ficou perfeito!' },
-                            { name: 'João Pedro', text: 'Resultado incrível! Parece que viajei no tempo de verdade.' },
-                            { name: 'Ana Costa', text: 'Qualidade surpreendente e entrega super rápida.' }
+                            {
+                                name: "Maria Silva",
+                                text: "Amei ver minha avó nos anos 60, ficou perfeito!",
+                            },
+                            {
+                                name: "João Pedro",
+                                text: "Resultado incrível! Parece que viajei no tempo de verdade.",
+                            },
+                            {
+                                name: "Ana Costa",
+                                text: "Qualidade surpreendente e entrega super rápida.",
+                            },
                         ].map((testimonial, i) => (
-                            <div key={i} className="bg-white rounded-lg p-6 shadow-md">
+                            <div
+                                key={i}
+                                className="bg-white rounded-lg p-6 shadow-md"
+                            >
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="w-12 h-12 bg-brand-blue/20 rounded-full flex items-center justify-center">
-                                        <span className="font-display text-xl text-brand-brown">{testimonial.name[0]}</span>
+                                        <span className="font-display text-xl text-brand-brown">
+                                            {testimonial.name[0]}
+                                        </span>
                                     </div>
-                                    <div className="font-body font-bold text-brand-brown">{testimonial.name}</div>
+                                    <div className="font-body font-bold text-brand-brown">
+                                        {testimonial.name}
+                                    </div>
                                 </div>
-                                <p className="font-body text-brand-brown/80 italic">"{testimonial.text}"</p>
+                                <p className="font-body text-brand-brown/80 italic">
+                                    "{testimonial.text}"
+                                </p>
                             </div>
                         ))}
                     </div>
@@ -397,36 +657,46 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
             </section>
 
             {/* FAQ */}
-            <section id="faq" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <section
+                id="faq"
+                className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+            >
                 <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
                     Perguntas frequentes
                 </h2>
                 <div className="space-y-6">
                     {[
                         {
-                            q: 'Quanto tempo leva?',
-                            a: 'Geralmente 2 a 3 minutos após o pagamento.'
+                            q: "Quanto tempo leva?",
+                            a: "Geralmente 2 a 3 minutos após o pagamento.",
                         },
                         {
-                            q: 'Como funciona a privacidade?',
-                            a: 'Não treinamos IA com suas fotos sem consentimento. Você pode apagar com 1 clique.'
+                            q: "Como funciona a privacidade?",
+                            a: "Não treinamos IA com suas fotos sem consentimento. Você pode apagar com 1 clique.",
                         },
                         {
-                            q: 'Quais tamanhos e formatos aceitos?',
-                            a: 'Aceitamos JPG e PNG, mínimo 1024 px.'
+                            q: "Quais tamanhos e formatos aceitos?",
+                            a: "Aceitamos JPG e PNG, mínimo 1024 px.",
                         },
                         {
-                            q: 'Formas de pagamento?',
-                            a: 'Pix, cartão, Apple Pay, Google Pay.'
+                            q: "Formas de pagamento?",
+                            a: "Pix, cartão, Apple Pay, Google Pay.",
                         },
                         {
-                            q: 'Como funciona o suporte?',
-                            a: 'Resposta em até 1 hora no horário comercial.'
-                        }
+                            q: "Como funciona o suporte?",
+                            a: "Resposta em até 1 hora no horário comercial.",
+                        },
                     ].map((faq, i) => (
-                        <div key={i} className="bg-white rounded-lg p-6 shadow-md">
-                            <h3 className="font-body font-bold text-lg text-brand-brown mb-2">{faq.q}</h3>
-                            <p className="font-body text-brand-brown/70">{faq.a}</p>
+                        <div
+                            key={i}
+                            className="bg-white rounded-lg p-6 shadow-md"
+                        >
+                            <h3 className="font-body font-bold text-lg text-brand-brown mb-2">
+                                {faq.q}
+                            </h3>
+                            <p className="font-body text-brand-brown/70">
+                                {faq.a}
+                            </p>
                         </div>
                     ))}
                 </div>
@@ -441,23 +711,25 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                     <p className="font-body text-xl text-vintage-paper/90 mb-8">
                         Ganhe comissões indicando a Image Ferrer
                     </p>
-                    
+
                     {/* Exemplo de ganho */}
                     <div className="bg-vintage-paper/10 rounded-lg p-6 mb-8 max-w-md mx-auto">
-                        <div className="font-display text-3xl text-vintage-paper mb-2">R$ 638,40</div>
+                        <div className="font-display text-3xl text-vintage-paper mb-2">
+                            R$ 638,40
+                        </div>
                         <p className="text-vintage-paper/80 font-body text-sm">
                             Ganho com 100 vendas (comissão de 40%)
                         </p>
                     </div>
-                    
+
                     <ul className="text-left max-w-md mx-auto mb-8 space-y-2 text-vintage-paper/90 font-body">
                         <li>✓ Link exclusivo para seu grupo</li>
                         <li>✓ 20% de desconto automático para membros</li>
                         <li>✓ Comissões até 40%</li>
                         <li>✓ Painel para acompanhar cliques e vendas</li>
                     </ul>
-                    <a 
-                        href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20tenho%20interesse%20em%20ser%20parceiro%20afiliado%20da%20Image%20Ferrer%21"
+                    <a
+                        href="https://wa.me/555198030797?text=Ol%C3%A1%2C%20tenho%20interesse%20em%20ser%20parceiro%20afiliado%20da%20Image%20Ferrer%21"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-block font-body text-lg bg-vintage-paper text-brand-blue px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg min-h-[44px]"
@@ -474,7 +746,9 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                     className="w-full font-body text-lg bg-brand-brown text-vintage-paper px-6 py-3 rounded-md hover:bg-opacity-90 transition-all shadow-md"
                 >
                     Gerar minhas 6 eras
-                    {refGroupName && <span className="ml-2 text-sm">• 20% off</span>}
+                    {refGroupName && (
+                        <span className="ml-2 text-sm">• 20% off</span>
+                    )}
                 </button>
             </div>
 
@@ -483,7 +757,9 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid md:grid-cols-3 gap-8 mb-8">
                         <div>
-                            <h3 className="font-display text-xl mb-4">Image Ferrer</h3>
+                            <h3 className="font-display text-xl mb-4">
+                                Image Ferrer
+                            </h3>
                             <p className="font-body text-sm text-vintage-paper/70">
                                 Transforme suas fotos em viagens no tempo.
                             </p>
@@ -491,22 +767,63 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                         <div>
                             <h4 className="font-body font-bold mb-4">Links</h4>
                             <ul className="space-y-2 font-body text-sm">
-                                <li><a href="#" className="text-vintage-paper/70 hover:text-vintage-paper">Política de privacidade</a></li>
-                                <li><a href="#" className="text-vintage-paper/70 hover:text-vintage-paper">Termos de uso</a></li>
-                                <li><a href="#" className="text-vintage-paper/70 hover:text-vintage-paper">LGPD</a></li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        className="text-vintage-paper/70 hover:text-vintage-paper"
+                                    >
+                                        Política de privacidade
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        className="text-vintage-paper/70 hover:text-vintage-paper"
+                                    >
+                                        Termos de uso
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        className="text-vintage-paper/70 hover:text-vintage-paper"
+                                    >
+                                        LGPD
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-body font-bold mb-4">Contato</h4>
+                            <h4 className="font-body font-bold mb-4">
+                                Contato
+                            </h4>
                             <ul className="space-y-2 font-body text-sm">
-                                <li className="text-vintage-paper/70">ferrerrstudio@gmail.com</li>
-                                <li><a href="#" className="text-vintage-paper/70 hover:text-vintage-paper">Suporte WhatsApp</a></li>
-                                <li><a href="#" className="text-vintage-paper/70 hover:text-vintage-paper">Instagram</a></li>
+                                <li className="text-vintage-paper/70">
+                                    ferrerrstudio@gmail.com
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        className="text-vintage-paper/70 hover:text-vintage-paper"
+                                    >
+                                        Suporte WhatsApp
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        className="text-vintage-paper/70 hover:text-vintage-paper"
+                                    >
+                                        Instagram
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div className="border-t border-vintage-paper/20 pt-8 text-center font-body text-sm text-vintage-paper/70">
-                        <p>© 2024 Image Ferrer. Todos os direitos reservados.</p>
+                        <p>
+                            © 2024 Image Ferrer. Todos os direitos reservados.
+                        </p>
                     </div>
                 </div>
             </footer>
