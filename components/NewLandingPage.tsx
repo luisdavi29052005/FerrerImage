@@ -251,12 +251,27 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                     </motion.div>
                 </div>
 
+                {/* Título da seção de exemplos */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="mt-16 text-center"
+                >
+                    <h2 className="font-display text-4xl md:text-5xl text-brand-brown mb-4">
+                        Veja a mágica acontecer
+                    </h2>
+                    <p className="font-body text-brand-brown/70 text-lg mb-8">
+                        Exemplos de transformações em diferentes décadas
+                    </p>
+                </motion.div>
+
                 {/* Visual de Polaroids */}
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+                    transition={{ delay: 0.6 }}
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
                 >
                     {["1950s", "1960s", "1970s", "1980s", "1990s", "2000s"].map(
                         (decade, i) => (
