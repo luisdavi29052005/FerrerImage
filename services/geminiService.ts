@@ -4,10 +4,13 @@
 */
 // FIX: Consolidate imports and add Modality for the config, per API guidelines.
 import { GoogleGenAI, GenerateContentResponse, Modality } from "@google/genai";
+import { APP_CONFIG } from '../config/appConfig';
+import { generateMockDecadeImage } from './mockImageService';
 
 const API_KEY = process.env.GEMINI_API_KEY;
 
-if (!API_KEY) {
+// Only throw error if not using mock mode
+if (!API_KEY && !APP_CONFIG.USE_MOCK_GENERATION) {
   throw new Error("GEMINI_API_KEY environment variable is not set");
 }
 
@@ -96,11 +99,27 @@ async function callGeminiWithRetry(imagePart: object, textPart: object): Promise
 /**
  * Generates a decade-styled image from a source image and a prompt.
  * It includes a fallback mechanism for prompts that might be blocked in certain regions.
+ * Can use mock generation or real API based on APP_CONFIG.USE_MOCK_GENERATION
  * @param imageDataUrl A data URL string of the source image (e.g., 'data:image/png;base64,...').
  * @param prompt The prompt to guide the image generation.
  * @returns A promise that resolves to a base64-encoded image data URL of the generated image.
  */
 export async function generateDecadeImage(imageDataUrl: string, prompt: string): Promise<string> {
+  // Extract decade from prompt for mock generation
+  const decade = extractDecade(prompt);
+  
+  // Use mock generation if enabled
+  if (APP_CONFIG.USE_MOCK_GENERATION) {
+    console.log(`🎭 MOCK MODE: Generating mock image for ${decade || 'unknown decade'}`);
+    if (!decade) {
+      throw new Error("Could not extract decade from prompt for mock generation");
+    }
+    return generateMockDecadeImage(imageDataUrl, decade);
+  }
+
+  // Real API generation below
+  console.log(`🔥 REAL MODE: Calling Gemini API for ${decade || 'unknown decade'}`);
+  
   const match = imageDataUrl.match(/^data:(image\/\w+);base64,(.*)$/);
   if (!match) {
     throw new Error("Invalid image data URL format. Expected 'data:image/...;base64,...'");
