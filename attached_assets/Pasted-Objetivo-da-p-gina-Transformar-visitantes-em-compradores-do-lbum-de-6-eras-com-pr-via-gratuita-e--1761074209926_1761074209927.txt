@@ -1,0 +1,215 @@
+Objetivo da página
+
+Transformar visitantes em compradores do álbum de 6 eras, com prévia gratuita e desconto automático quando vierem de link de afiliado.
+
+Arquitetura da página
+
+Cabeçalho fixo
+Hero acima da dobra
+Prova social
+Como funciona em 3 passos
+Upload + prévia gratuita
+Escolha das eras
+Preço e benefícios
+Depoimentos curtos
+FAQ
+Chamada para afiliados
+Rodapé com legal, suporte e redes
+
+Cabeçalho
+
+Logo pequeno à esquerda. À direita, botões: Ver exemplos, Preço, FAQ, Entrar. CTA destacado: Gerar minhas 6 eras.
+
+Estados dinâmicos
+Quando o usuário vem com ?ref=GRUPOX, mostre uma etiqueta perto do CTA: 20% off de GRUPOX aplicado.
+
+Hero
+
+Título curto
+Transforme 1 foto em 6 versões de épocas diferentes, em minutos.
+
+Sub
+Pré-visualização gratuita, desconto automático no seu link, entrega segura.
+
+CTAs
+Primário: Gerar minhas 6 eras
+Secundário: Ver exemplos reais
+
+Elementos visuais
+Mockup de 6 polaroids com “1950s, 1960s, 1970s, 1980s, 1990s, 2000s”. Coloque um carrossel lento com 3 antes e depois.
+
+Microconfiança
+Privacidade garantida, Checkout seguro, Suporte em português.
+
+Prova social
+
+Selos simples tipo “+3.200 álbuns gerados”, “Avaliação 4,9 de 5”. Três logos de grupos ou criadores parceiros quando já tiver. Depoimentos com 1 frase curta cada.
+
+Como funciona (3 passos)
+
+Envie sua foto.
+
+Veja uma prévia gratuita com marca d’água.
+
+Pague, receba seu álbum completo com 6 eras em alta.
+
+Cada passo com ícone, título curto e microcopy de 1 linha.
+
+Upload + pré-visualização
+
+Bloco central com arrastar e soltar, botão Selecionar foto e “colar do clipboard”. Suporte a câmera em mobile.
+
+Validação imediata
+Detector simples: rosto visível, nitidez, iluminação. Se ruim, sugira refazer a foto.
+
+Após upload
+Gere 1 prévia com marca d’água. Mostre já um CTA flutuante: Comprar álbum por R$ 19,90. Se tiver ref, mostre preço com desconto aplicado.
+
+Mensagens de estado
+Enviando foto…, Analisando…, Prévia pronta. Use barra de progresso e skeletons.
+
+Escolha das eras
+
+Grade com 6 seleções padrão marcadas. Permita trocar a década em cada card, mas sempre mantenha 6 no total. Dica curta: Você pode personalizar as décadas, nós sugerimos as mais populares.
+
+Preço e benefícios
+
+Card simples de preço
+Álbum com 6 imagens, R$ 19,90. Se houver ref, exibir preço riscado e novo total com etiqueta 20% off do GRUPOX aplicado.
+
+Benefícios listados
+Entrega rápida, Imagens em alta, Uso livre em redes, 1 ajuste gratuito em até 24 horas.
+
+Garantia curta
+Se não estiver satisfeito, peça 1 revisão em até 24 horas.
+
+Depoimentos curtos
+
+Três cards com rosto pequeno, nome e uma frase. Exemplo: Amei ver minha avó nos anos 60, ficou perfeito.
+
+FAQ essencial
+
+Quanto tempo leva
+Geralmente 2 a 3 minutos após o pagamento.
+Privacidade
+Não treinamos IA com suas fotos sem consentimento. Você pode apagar com 1 clique.
+Tamanhos e formatos
+Aceitamos JPG e PNG, mínimo 1024 px.
+Formas de pagamento
+Pix, cartão, Apple Pay, Google Pay.
+Suporte
+Resposta em até 1 hora no horário comercial.
+
+Chamada para afiliados
+
+Tem grupo de fotos? Ganhe comissões indicando a ferrer image.
+Botão: Quero ser parceiro.
+Resumo rápido: Link exclusivo, 20% off para membros, comissões até 40% e painel para acompanhar cliques e vendas.
+
+Rodapé
+
+Links
+Política de privacidade, Termos, LGPD, Contato, Suporte WhatsApp, Instagram.
+Créditos e aviso de marca. Informar e-mail de contato e CNPJ quando disponível.
+
+Estados dinâmicos por link de afiliado
+
+Banner superior fino quando há ref
+Você ganhou 20% de desconto, cortesia de GRUPOX.
+Cupom auto aplicado, não precisa digitar nada.
+
+Etiqueta no preço e no CTA
+20% off aplicado pelo link do seu grupo.
+
+Expiração suave
+Se quiser, mostre um cronômetro de 24 horas para criar urgência leve.
+
+Microcopy pronta
+
+Botões
+Gerar minhas 6 eras, Ver exemplos, Enviar foto, Comprar álbum por R$ 19,90, Finalizar compra.
+Mensagens
+Sua prévia está pronta, Desconto do seu grupo aplicado, Pagamento confirmado, Estamos gerando suas 6 eras, Seu álbum está pronto para download.
+
+Design e estilo
+
+Tipografia
+Headings: display serif elegante. Texto: sans moderna de boa legibilidade.
+
+Cores
+Fundo creme claro, textos cinza escuro, acento em azul petróleo discreto. Botões com cor sólida legível, estados de foco claros.
+
+Layout
+Container central, grid responsivo, cards com cantos arredondados, sombras leves, espaçamento generoso. Evite poluição visual.
+
+Animações
+Transições suaves, fade e slide curtos. Barra de progresso animada na geração.
+
+Mobile primeiro
+Header compacto, CTA sempre visível, upload por câmera. Tudo navegável com uma mão. Evite modais pesados.
+
+Acessibilidade
+Labels e aria para inputs, aria-live nas mensagens de status, contraste AA, foco visível, navegação por teclado.
+
+SEO e social
+
+Meta title
+Transforme 1 foto em 6 épocas, prévia grátis.
+Description
+Envie uma foto, veja uma prévia gratuita e receba 6 imagens de décadas diferentes. Desconto automático em links de grupos.
+Open Graph
+Imagem com grid das 6 eras. Use og:title e og:description.
+Schema
+Product com preço e AggregateRating quando tiver avaliações.
+Velocidade
+Imagens otimizadas e lazy, remover JS desnecessário, usar edge runtime quando possível.
+
+Eventos de analytics (GA4 + Meta Pixel)
+
+page_view
+upload_started, upload_failed, upload_ok
+preview_generated
+ref_detected, discount_applied
+checkout_started
+payment_success
+album_delivered
+affiliate_signup_click, affiliate_signup_success
+
+Segurança e confiança
+
+LGPD visível e simples
+Explique a base legal, promessa de não treinar modelos sem consentimento, botão apagar fotos.
+Infra
+Upload com URL pré-assinada, CSP rígida, verificação de webhook, rate limit, logs.
+
+Fluxo completo do usuário na landing
+
+Acessa a landing. Se vier com ref, vê banner e etiqueta de desconto.
+
+Sobe a foto e recebe 1 prévia com marca d’água.
+
+Escolhe ou confirma as 6 eras sugeridas.
+
+Checkout com desconto auto aplicado e pagamento rápido.
+
+Página de obrigado com barra de progresso, download e upsell de +6 eras.
+
+E-mail com link de download e convite para indicar amigos.
+
+Banners prontos para testar
+
+Teste A
+Com uma foto, ganhe 6 versões de épocas diferentes. Prévia grátis.
+Teste B
+Sua foto, em 6 décadas. Veja antes de pagar.
+Teste C
+Descubra como você ficaria nos anos 50 até os 2000. Prévia grátis, desconto do seu grupo.
+
+O que codar primeiro hoje
+
+Hero com copy e CTAs
+Upload com prévia e marca d’água
+Etiqueta de desconto quando ref presente
+Checkout com produto R$ 19,90 e cupom auto aplicado
+Página de obrigado com download e barra de progresso
+FAQ, Depoimentos, Chamada para afiliados
