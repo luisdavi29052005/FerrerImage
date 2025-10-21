@@ -114,32 +114,22 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="font-body text-xl md:text-2xl text-brand-brown/80 mb-8"
+                        className="font-body text-xl md:text-2xl text-brand-brown/80 mb-12"
                     >
-                        Pré-visualização gratuita, desconto automático no seu
-                        link, entrega segura.
+                        Teste grátis com prévia • Desconto automático no seu
+                        link • Entrega segura
                     </motion.p>
+
+                    {/* Upload com Prévia Gratuita - Destaque Principal */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                        className="mb-8"
                     >
-                        <button
-                            onClick={onGetStarted}
-                            className="font-body text-lg bg-brand-brown text-vintage-paper px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg w-full sm:w-auto min-h-[44px]"
-                        >
-                            Enviar foto agora
-                            {refGroupName && (
-                                <span className="ml-2 text-sm">• 20% off</span>
-                            )}
-                        </button>
-                        <button
-                            onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
-                            className="font-body text-lg border-2 border-brand-blue text-brand-brown px-8 py-4 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all w-full sm:w-auto min-h-[44px]"
-                        >
-                            Ver exemplos reais
-                        </button>
+                        <PreviewUpload
+                            onPurchaseClick={handlePreviewPurchase}
+                        />
                     </motion.div>
 
                     {/* Requisitos mínimos */}
@@ -147,22 +137,25 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="text-sm text-brand-brown/60 font-body mt-3"
+                        className="text-sm text-brand-brown/60 font-body mb-6"
                     >
                         Rosto visível • Boa iluminação • Mínimo 1024px • JPG ou
                         PNG
                     </motion.p>
 
-                    {/* Upload com Prévia Gratuita */}
+                    {/* Botão secundário para ver exemplos */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.35 }}
-                        className="mt-12"
+                        className="flex justify-center"
                     >
-                        <PreviewUpload
-                            onPurchaseClick={handlePreviewPurchase}
-                        />
+                        <button
+                            onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
+                            className="font-body text-base border-2 border-brand-blue text-brand-brown px-6 py-3 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all min-h-[44px]"
+                        >
+                            Ver exemplos de transformações
+                        </button>
                     </motion.div>
 
                     {/* Microconfiança */}
