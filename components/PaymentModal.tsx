@@ -30,7 +30,7 @@ const modalVariants: Variants = {
 interface PaymentModalProps {
     request: PaymentRequest | null;
     onClose: () => void;
-    onPaymentSuccess: () => void;
+    onPaymentSuccess: (email: string) => void;
 }
 
 const PRICES = {
@@ -48,6 +48,21 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
     const BASE_PRICE = parseFloat(price);
     const [pricing, setPricing] = useState(calculateDiscount(BASE_PRICE));
     const [refGroupName, setRefGroupName] = useState<string | null>(null);
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setEmail(value);
+        if (emailError && validateEmail(value)) {
+            setEmailError('');
+        }
+    };
 
     useEffect(() => {
       setPricing(calculateDiscount(BASE_PRICE));
@@ -105,10 +120,37 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                           </div>
                         </div>
 
+                        {/* Email Input */}
+                        <div className="w-full mb-6">
+                            <label htmlFor="email" className="block font-body font-bold text-brand-brown mb-2 text-left">
+                                Email para receber suas imagens:
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                                placeholder="seu@email.com"
+                                className="w-full px-4 py-3 rounded-md bg-white font-body text-brand-brown placeholder-brand-brown/40 border-2 border-brand-brown/30 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-all"
+                                required
+                            />
+                            {emailError && (
+                                <p className="mt-2 text-sm text-brand-red font-body">{emailError}</p>
+                            )}
+                            <p className="mt-2 text-xs text-brand-brown/60 font-body">
+                                📧 Suas imagens sem marca d'água serão enviadas para este email em até 5 minutos
+                            </p>
+                        </div>
+
                         <div className="w-full">
                             <PayPalButtons
                                 style={{ layout: "vertical", shape: 'rect', label: 'pay' }}
                                 createOrder={(data, actions) => {
+                                    if (!email || !validateEmail(email)) {
+                                        setEmailError('Por favor, insira um email válido para receber suas imagens.');
+                                        return Promise.reject(new Error('Invalid email'));
+                                    }
+                                    setEmailError('');
                                     return actions.order.create({
                                         purchase_units: [{
                                             description: description,
@@ -123,7 +165,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                                     try {
                                         const order = await actions.order.capture();
                                         console.log("Payment successful:", order);
-                                        onPaymentSuccess();
+                                        onPaymentSuccess(email);
                                     } catch (error) {
                                         console.error("Error capturing order: ", error);
                                         alert("There was an issue confirming your payment. Please try again.");

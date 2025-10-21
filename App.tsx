@@ -185,14 +185,16 @@ function App() {
         }
     };
     
-    const handlePaymentSuccess = useCallback(async () => {
+    const handlePaymentSuccess = useCallback(async (email: string) => {
         if (!paymentRequest) return;
-        if (!userEmail) {
-            alert("Error: User email not found. Please start over.");
+        if (!email) {
+            alert("Error: Email is required to send your images.");
             setPaymentRequest(null);
-            handleReset(); 
             return;
         }
+        
+        // Update user email with the one from checkout
+        setUserEmail(email);
 
         setPaymentRequest(null); // Close modal immediately
         setConfirmationMessage('Processing your images and sending them to your email...');
@@ -206,8 +208,8 @@ function App() {
                 const decade = paymentRequest.decade;
                 const image = generatedImages[decade];
                 if (image?.status === 'done' && image.url) {
-                    await sendSingleImageByEmail(userEmail, image.url, decade);
-                    setConfirmationMessage(`Success! Your ${decade} image has been sent to ${userEmail}.`);
+                    await sendSingleImageByEmail(email, image.url, decade);
+                    setConfirmationMessage(`Success! Your ${decade} image has been sent to ${email}.`);
                 } else {
                     throw new Error("Could not find the generated image to send.");
                 }
@@ -226,8 +228,8 @@ function App() {
                 }
 
                 const albumDataUrl = await createAlbumPage(imageData);
-                await sendAlbumByEmail(userEmail, albumDataUrl);
-                setConfirmationMessage(`Success! Your album has been sent to ${userEmail}.`);
+                await sendAlbumByEmail(email, albumDataUrl);
+                setConfirmationMessage(`Success! Your album has been sent to ${email}.`);
             }
             setShowConfirmation(true); // Show success message
         } catch (error) {
@@ -239,7 +241,7 @@ function App() {
             // Hide final message after a longer delay
             setTimeout(() => setShowConfirmation(false), 10000);
         }
-    }, [paymentRequest, generatedImages, userEmail]);
+    }, [paymentRequest, generatedImages]);
 
     const handleClosePaymentModal = useCallback(() => {
         setPaymentRequest(null);
