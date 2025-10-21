@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import FullscreenModal from './components/FullscreenModal';
 import PaymentModal from './components/PaymentModal';
 import LandingPage from './components/LandingPage';
+import NewLandingPage from './components/NewLandingPage';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import { sendSingleImageByEmail, sendAlbumByEmail } from './services/emailService';
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
@@ -59,7 +60,7 @@ function App() {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const [generatedImages, setGeneratedImages] = useState<Record<string, GeneratedImage>>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [appState, setAppState] = useState<'landing' | 'privacy-policy' | 'idle' | 'image-uploaded' | 'generating' | 'results-shown'>('landing');
+    const [appState, setAppState] = useState<'new-landing' | 'landing' | 'privacy-policy' | 'idle' | 'image-uploaded' | 'generating' | 'results-shown'>('new-landing');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
     const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -265,6 +266,10 @@ function App() {
     const handleBackToLanding = () => {
         setAppState('landing');
     }
+
+    const handleGetStarted = () => {
+        setAppState('landing');
+    }
     
     if (!PAYPAL_CLIENT_ID) {
         return (
@@ -297,6 +302,18 @@ function App() {
                 </AnimatePresence>
                 <div className="z-10 flex flex-col items-center justify-center w-full h-full flex-1 min-h-0 container mx-auto">
                     <AnimatePresence mode="wait">
+                        {appState === 'new-landing' && (
+                             <motion.div
+                                key="new-landing"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.5 }}
+                                className="w-full"
+                             >
+                                <NewLandingPage onGetStarted={handleGetStarted} />
+                             </motion.div>
+                        )}
                         {appState === 'landing' && (
                              <motion.div
                                 key="landing"
@@ -437,7 +454,7 @@ function App() {
                         )}
                     </AnimatePresence>
                 </div>
-                {appState !== 'landing' && appState !== 'privacy-policy' && <Footer />}
+                {appState !== 'new-landing' && appState !== 'landing' && appState !== 'privacy-policy' && <Footer />}
                 <FullscreenModal imageUrl={fullscreenImage} onClose={handleCloseFullscreen} />
                 <PaymentModal 
                     request={paymentRequest}
