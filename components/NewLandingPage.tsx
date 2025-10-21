@@ -135,7 +135,7 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                             )}
                         </button>
                         <button
-                            onClick={() => scrollToSection("examples")}
+                            onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
                             className="font-body text-lg border-2 border-brand-blue text-brand-brown px-8 py-4 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all w-full sm:w-auto min-h-[44px]"
                         >
                             Ver exemplos reais
@@ -491,17 +491,7 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                 </div>
             </section>
 
-            {/* Exemplos */}
-            <section id="examples" className="bg-brand-blue/5 py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
-                        Veja a mágica acontecer
-                    </h2>
-                    <div className="text-center text-brand-brown/60 font-body">
-                        <p>Exemplos de transformações serão exibidos aqui</p>
-                    </div>
-                </div>
-            </section>
+            
 
             {/* Preço e Benefícios */}
             <section
