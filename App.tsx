@@ -14,11 +14,17 @@ import LandingPage from './components/LandingPage';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import { sendSingleImageByEmail, sendAlbumByEmail } from './services/emailService';
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { captureReferralFromURL } from './lib/affiliateUtils';
 
 
 const DECADES = ['1950s', '1960s', '1970s', '1980s', '1990s', '2000s'];
 
 type ImageStatus = 'pending' | 'done' | 'error';
+
+// Capturar referência na inicialização
+if (typeof window !== 'undefined') {
+  captureReferralFromURL();
+}
 interface GeneratedImage {
     status: ImageStatus;
     url?: string;

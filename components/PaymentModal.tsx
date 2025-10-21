@@ -2,10 +2,11 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import type { PaymentRequest } from '../App';
+import { calculateDiscount, getRefGroupName } from '../lib/affiliateUtils';
 
 const backdropVariants: Variants = {
     visible: { opacity: 1 },
@@ -38,11 +39,20 @@ const PRICES = {
 };
 
 const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPaymentSuccess }) => {
-    
+
     const price = request ? PRICES[request.type] : '0.00';
     const description = request?.type === 'single'
         ? `Single Image Download - ${request.decade}`
         : 'Full Album Download';
+
+    const BASE_PRICE = parseFloat(price);
+    const [pricing, setPricing] = useState(calculateDiscount(BASE_PRICE));
+    const [refGroupName, setRefGroupName] = useState<string | null>(null);
+
+    useEffect(() => {
+      setPricing(calculateDiscount(BASE_PRICE));
+      setRefGroupName(getRefGroupName());
+    }, [BASE_PRICE]);
 
     return (
         <AnimatePresence>
@@ -64,15 +74,25 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                     >
                         <h2 className="font-display text-4xl mb-2">Confirm Purchase</h2>
                         <p className="text-brand-brown/70 mb-6">Complete your payment to download your image(s).</p>
-                        
-                        <div className="w-full bg-white/60 rounded-md p-4 mb-6 text-left">
-                            <div className="flex justify-between items-center mb-1">
-                                <span className="font-bold">{description}</span>
-                                <span className="font-bold">${price}</span>
+
+                        <div className="space-y-4">
+                          {pricing.hasDiscount && refGroupName && (
+                            <div className="bg-brand-orange/10 border-2 border-brand-orange/30 rounded-lg p-3 text-center">
+                              <div className="text-brand-orange font-heading text-lg font-bold">
+                                🎉 {pricing.discountPercent}% OFF por {refGroupName}
+                              </div>
                             </div>
-                             <p className="text-sm text-brand-brown/60">One-time payment</p>
+                          )}
+
+                          <div className="w-full bg-white/60 rounded-md p-4 mb-6 text-left">
+                              <div className="flex justify-between items-center mb-1">
+                                  <span className="font-bold">{description}</span>
+                                  <span className="font-bold">${price}</span>
+                              </div>
+                               <p className="text-sm text-brand-brown/60">One-time payment</p>
+                          </div>
                         </div>
-                        
+
                         <div className="w-full">
                             <PayPalButtons
                                 style={{ layout: "vertical", shape: 'rect', label: 'pay' }}
@@ -82,7 +102,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                                             description: description,
                                             amount: {
                                                 currency_code: "USD",
-                                                value: price,
+                                                value: pricing.discountedPrice.toFixed(2),
                                             }
                                         }]
                                     });
@@ -110,6 +130,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                                 }}
                                 key={request.type + (request.decade || '')} // Force re-render on request change
                             />
+                        </div>
+
+                        <div className="flex justify-between items-center text-brand-brown font-bold text-xl mt-4 pt-4 border-t border-brand-brown/20">
+                          <span>Total:</span>
+                          <div className="flex flex-col items-end">
+                            {pricing.hasDiscount && (
+                              <span className="text-sm text-brand-brown/50 line-through font-normal">
+                                R$ {BASE_PRICE.toFixed(2)}
+                              </span>
+                            )}
+                            <span className={pricing.hasDiscount ? 'text-brand-orange' : ''}>
+                              R$ {pricing.discountedPrice.toFixed(2)}
+                            </span>
+                          </div>
                         </div>
 
                          <button
