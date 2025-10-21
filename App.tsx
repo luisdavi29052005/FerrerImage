@@ -10,7 +10,6 @@ import { createAlbumPage } from './lib/albumUtils';
 import Footer from './components/Footer';
 import FullscreenModal from './components/FullscreenModal';
 import PaymentModal from './components/PaymentModal';
-import LandingPage from './components/LandingPage';
 import NewLandingPage from './components/NewLandingPage';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import { sendSingleImageByEmail, sendAlbumByEmail } from './services/emailService';
@@ -60,7 +59,7 @@ function App() {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const [generatedImages, setGeneratedImages] = useState<Record<string, GeneratedImage>>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [appState, setAppState] = useState<'new-landing' | 'landing' | 'privacy-policy' | 'idle' | 'image-uploaded' | 'generating' | 'results-shown'>('new-landing');
+    const [appState, setAppState] = useState<'new-landing' | 'privacy-policy' | 'idle' | 'image-uploaded' | 'generating' | 'results-shown'>('new-landing');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
     const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -256,21 +255,16 @@ function App() {
         setFullscreenImage(null);
     };
 
-    const handleLandingSubmit = (email: string) => {
-        setUserEmail(email);
-        setAppState('idle');
-    };
-
     const handleShowPrivacyPolicy = () => {
         setAppState('privacy-policy');
     };
 
-    const handleBackToLanding = () => {
-        setAppState('landing');
+    const handleBackToNewLanding = () => {
+        setAppState('new-landing');
     }
 
     const handleGetStarted = () => {
-        setAppState('landing');
+        setAppState('idle');
     }
     
     if (!PAYPAL_CLIENT_ID) {
@@ -316,17 +310,6 @@ function App() {
                                 <NewLandingPage onGetStarted={handleGetStarted} />
                              </motion.div>
                         )}
-                        {appState === 'landing' && (
-                             <motion.div
-                                key="landing"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.5 }}
-                             >
-                                <LandingPage onSubmitSuccess={handleLandingSubmit} onShowPrivacyPolicy={handleShowPrivacyPolicy} />
-                             </motion.div>
-                        )}
                          {appState === 'privacy-policy' && (
                              <motion.div
                                 key="privacy"
@@ -336,10 +319,10 @@ function App() {
                                 transition={{ duration: 0.5 }}
                                 className="w-full"
                              >
-                                <PrivacyPolicy onBack={handleBackToLanding} />
+                                <PrivacyPolicy onBack={handleBackToNewLanding} />
                              </motion.div>
                         )}
-                        {appState !== 'landing' && appState !== 'privacy-policy' && (
+                        {appState !== 'new-landing' && appState !== 'privacy-policy' && (
                             <motion.div
                                 key="app-content"
                                 initial={{ opacity: 0 }}
@@ -456,7 +439,7 @@ function App() {
                         )}
                     </AnimatePresence>
                 </div>
-                {appState !== 'new-landing' && appState !== 'landing' && appState !== 'privacy-policy' && <Footer />}
+                {appState !== 'new-landing' && appState !== 'privacy-policy' && <Footer />}
                 <FullscreenModal imageUrl={fullscreenImage} onClose={handleCloseFullscreen} />
                 <PaymentModal 
                     request={paymentRequest}
