@@ -456,9 +456,14 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreview
                         <li>✓ Comissões até 40%</li>
                         <li>✓ Painel para acompanhar cliques e vendas</li>
                     </ul>
-                    <button className="font-body text-lg bg-vintage-paper text-brand-blue px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg min-h-[44px]">
+                    <a 
+                        href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20tenho%20interesse%20em%20ser%20parceiro%20afiliado%20da%20Image%20Ferrer%21"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block font-body text-lg bg-vintage-paper text-brand-blue px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg min-h-[44px]"
+                    >
                         Quero ser parceiro
-                    </button>
+                    </a>
                 </div>
             </section>
 
