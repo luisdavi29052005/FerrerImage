@@ -9,12 +9,15 @@ import { generateMockDecadeImage } from './mockImageService';
 
 const API_KEY = process.env.GEMINI_API_KEY;
 
-// Only throw error if not using mock mode
-if (!API_KEY && !APP_CONFIG.USE_MOCK_GENERATION) {
-  throw new Error("GEMINI_API_KEY environment variable is not set");
-}
+// Initialize AI client only when not using mock mode
+let ai: GoogleGenAI | null = null;
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+if (!APP_CONFIG.USE_MOCK_GENERATION) {
+  if (!API_KEY) {
+    throw new Error("GEMINI_API_KEY environment variable is not set");
+  }
+  ai = new GoogleGenAI({ apiKey: API_KEY });
+}
 
 
 // --- Helper Functions ---
@@ -119,6 +122,10 @@ export async function generateDecadeImage(imageDataUrl: string, prompt: string):
 
   // Real API generation below
   console.log(`🔥 REAL MODE: Calling Gemini API for ${decade || 'unknown decade'}`);
+  
+  if (!ai) {
+    throw new Error("Gemini API client is not initialized. Check your API key configuration.");
+  }
   
   const match = imageDataUrl.match(/^data:(image\/\w+);base64,(.*)$/);
   if (!match) {
