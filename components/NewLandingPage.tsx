@@ -6,18 +6,28 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getRefGroupName } from '../lib/affiliateUtils';
+import PreviewUpload from './PreviewUpload';
 
 interface NewLandingPageProps {
     onGetStarted: () => void;
+    onPreviewPurchase?: (uploadedImage: string) => void;
 }
 
-const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
+const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted, onPreviewPurchase }) => {
     const [refGroupName, setRefGroupName] = useState<string | null>(null);
 
     useEffect(() => {
         const groupName = getRefGroupName();
         setRefGroupName(groupName);
     }, []);
+
+    const handlePreviewPurchase = (uploadedImage: string) => {
+        if (onPreviewPurchase) {
+            onPreviewPurchase(uploadedImage);
+        } else {
+            onGetStarted();
+        }
+    };
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
@@ -112,11 +122,21 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                         Rosto visível • Boa iluminação • Mínimo 1024px • JPG ou PNG
                     </motion.p>
 
+                    {/* Upload com Prévia Gratuita */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35 }}
+                        className="mt-12"
+                    >
+                        <PreviewUpload onPurchaseClick={handlePreviewPurchase} />
+                    </motion.div>
+
                     {/* Microconfiança */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
+                        transition={{ delay: 0.4 }}
                         className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-brand-brown/70 font-body"
                     >
                         <div className="flex items-center gap-2">
@@ -143,7 +163,7 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({ onGetStarted }) => {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
+                        transition={{ delay: 0.5 }}
                         className="mt-8 bg-white/50 rounded-lg p-4 max-w-md mx-auto border border-brand-brown/10"
                     >
                         <div className="flex items-center gap-3 mb-2">

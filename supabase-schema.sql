@@ -100,7 +100,23 @@ CREATE TABLE IF NOT EXISTS attribution_rules (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Analytics events
+CREATE TABLE IF NOT EXISTS analytics_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  session_id TEXT NOT NULL,
+  event TEXT NOT NULL,
+  properties JSONB,
+  user_agent TEXT,
+  referrer TEXT,
+  url TEXT,
+  timestamp BIGINT
+);
+
 -- Índices para performance
+CREATE INDEX IF NOT EXISTS idx_analytics_session ON analytics_events(session_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_event ON analytics_events(event);
+CREATE INDEX IF NOT EXISTS idx_analytics_created ON analytics_events(created_at);
 CREATE INDEX IF NOT EXISTS idx_orders_ref_link ON orders(ref_link_id);
 CREATE INDEX IF NOT EXISTS idx_commissions_affiliate ON commissions(affiliate_id);
 CREATE INDEX IF NOT EXISTS idx_commissions_status ON commissions(status);

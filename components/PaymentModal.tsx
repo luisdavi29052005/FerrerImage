@@ -7,6 +7,7 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import type { PaymentRequest } from '../App';
 import { calculateDiscount, getRefGroupName } from '../lib/affiliateUtils';
+import analytics from '../services/analyticsService';
 
 const backdropVariants: Variants = {
     visible: { opacity: 1 },
@@ -151,6 +152,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                                         return Promise.reject(new Error('Invalid email'));
                                     }
                                     setEmailError('');
+                                    analytics.trackPaymentInitiated(pricing.discountedPrice.toFixed(2), 'USD');
                                     return actions.order.create({
                                         purchase_units: [{
                                             description: description,
@@ -164,17 +166,23 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                                 onApprove={async (data, actions) => {
                                     try {
                                         const order = await actions.order.capture();
-                                        console.log("Payment successful:", order);
-                                        onPaymentSuccess(email);
+                                        if (order && order.status === 'COMPLETED') {
+                                            analytics.trackPaymentCompleted(pricing.discountedPrice.toFixed(2), 'USD', data.orderID);
+                                            onPaymentSuccess(email);
+                                        }
                                     } catch (error) {
                                         console.error("Error capturing order: ", error);
+                                        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+                                        analytics.trackPaymentFailed(errorMsg);
                                         alert("There was an issue confirming your payment. Please try again.");
                                     } finally {
                                         onClose();
                                     }
                                 }}
                                 onError={(err) => {
-                                    console.error("PayPal Error:", err);
+                                    console.error("PayPal Checkout onError", err);
+                                    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+                                    analytics.trackPaymentFailed(errorMsg);
                                     alert("An error occurred with your payment. Please try again or use a different payment method.");
                                     onClose();
                                 }}

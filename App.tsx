@@ -15,6 +15,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import { sendSingleImageByEmail, sendAlbumByEmail } from './services/emailService';
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { captureReferralFromURL } from './lib/affiliateUtils';
+import analytics from './services/analyticsService';
 
 
 const DECADES = ['1950s', '1960s', '1970s', '1980s', '1990s', '2000s'];
@@ -85,6 +86,7 @@ function App() {
     const handleGenerateClick = async () => {
         if (!uploadedImage) return;
 
+        analytics.trackEvent('generation_started', { decadeCount: DECADES.length });
         setIsLoading(true);
         setAppState('generating');
         
@@ -137,6 +139,7 @@ function App() {
             return;
         }
         
+        analytics.trackRegenerateImage(decade);
         console.log(`Regenerating image for ${decade}...`);
 
         setGeneratedImages(prev => ({
@@ -170,6 +173,7 @@ function App() {
     const handleDownloadIndividualImage = (decade: string) => {
         const image = generatedImages[decade];
         if (image?.status === 'done' && image.url) {
+            analytics.trackPurchaseClicked('single', decade);
             setPaymentRequest({ type: 'single', decade });
         }
     };
@@ -178,6 +182,7 @@ function App() {
         // FIX: Explicitly type `img` as `GeneratedImage` to resolve an issue where it was inferred as `unknown`.
         const generatedCount = Object.values(generatedImages).filter((img: GeneratedImage) => img.status === 'done').length;
         if (generatedCount > 0) {
+            analytics.trackPurchaseClicked('album');
             setPaymentRequest({ type: 'album' });
         } else {
             alert("Please wait for at least one image to finish generating.");
@@ -266,6 +271,11 @@ function App() {
     const handleGetStarted = () => {
         setAppState('idle');
     }
+
+    const handlePreviewPurchase = (preUploadedImage: string) => {
+        setUploadedImage(preUploadedImage);
+        setAppState('image-uploaded');
+    }
     
     if (!PAYPAL_CLIENT_ID) {
         return (
@@ -307,7 +317,7 @@ function App() {
                                 transition={{ duration: 0.5 }}
                                 className="w-full"
                              >
-                                <NewLandingPage onGetStarted={handleGetStarted} />
+                                <NewLandingPage onGetStarted={handleGetStarted} onPreviewPurchase={handlePreviewPurchase} />
                              </motion.div>
                         )}
                          {appState === 'privacy-policy' && (
