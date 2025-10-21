@@ -54,11 +54,23 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
       setRefGroupName(getRefGroupName());
     }, [BASE_PRICE]);
 
+    // Prevent background scroll when modal is open
+    useEffect(() => {
+        if (request) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [request]);
+
     return (
         <AnimatePresence>
             {request && (
                 <motion.div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
                     onClick={onClose}
                     initial="hidden"
                     animate="visible"
@@ -67,7 +79,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, onClose, onPayment
                     transition={{ duration: 0.3 }}
                 >
                     <motion.div
-                        className="relative w-full max-w-md bg-vintage-paper rounded-lg shadow-2xl p-8 flex flex-col items-center text-center font-body text-brand-brown"
+                        className="relative w-full max-w-md bg-vintage-paper rounded-lg shadow-2xl p-8 flex flex-col items-center text-center font-body text-brand-brown my-auto"
                         onClick={(e) => e.stopPropagation()}
                         variants={modalVariants}
                         exit="exit"
