@@ -151,7 +151,12 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                         className="flex justify-center"
                     >
                         <button
-                            onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
+                            onClick={() =>
+                                window.scrollTo({
+                                    top: 800,
+                                    behavior: "smooth",
+                                })
+                            }
                             className="font-body text-base border-2 border-brand-blue text-brand-brown px-6 py-3 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all min-h-[44px]"
                         >
                             Ver exemplos de transformações
@@ -266,23 +271,30 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                     transition={{ delay: 0.6 }}
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
                 >
-                    {["1950s", "1960s", "1970s", "1980s", "1990s", "2000s"].map(
-                        (decade, i) => (
-                            <div
-                                key={decade}
-                                className="bg-white p-3 shadow-lg transform rotate-1 hover:rotate-0 transition-transform"
-                            >
-                                <div className="bg-gray-200 aspect-square rounded flex items-center justify-center">
-                                    <span className="font-handwriting text-2xl text-gray-400">
-                                        {decade}
-                                    </span>
-                                </div>
-                                <div className="mt-2 font-handwriting text-center text-brand-brown">
-                                    {decade}
-                                </div>
+                    {[
+                        { decade: "1950s", img: "/assets/image/1950s.jpg" },
+                        { decade: "1960s", img: "/assets/image/1960s.jpg" },
+                        { decade: "1970s", img: "/assets/image/1970s.jpg" },
+                        { decade: "1980s", img: "/assets/image/1980s.jpg" },
+                        { decade: "1990s", img: "/assets/image/1990s.jpg" },
+                        { decade: "2000s", img: "/assets/image/2000s.jpg" },
+                    ].map(({ decade, img }) => (
+                        <div
+                            key={decade}
+                            className="bg-white p-3 shadow-lg transform rotate-1 hover:rotate-0 transition-transform rounded-xl"
+                        >
+                            <div className="aspect-square overflow-hidden rounded-xl">
+                                <img
+                                    src={img}
+                                    alt={`Foto da era ${decade}`}
+                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                />
                             </div>
-                        ),
-                    )}
+                            <div className="mt-2 font-handwriting text-center text-brand-brown">
+                                {decade}
+                            </div>
+                        </div>
+                    ))}
                 </motion.div>
             </section>
 
@@ -483,8 +495,6 @@ const NewLandingPage: React.FC<NewLandingPageProps> = ({
                     </div>
                 </div>
             </section>
-
-            
 
             {/* Preço e Benefícios */}
             <section
