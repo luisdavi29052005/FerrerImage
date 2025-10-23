@@ -24,7 +24,7 @@ type ImageStatus = 'pending' | 'done' | 'error';
 
 // Capturar referência na inicialização
 if (typeof window !== 'undefined') {
-  captureReferralFromURL();
+    captureReferralFromURL();
 }
 interface GeneratedImage {
     status: ImageStatus;
@@ -89,7 +89,7 @@ function App() {
         analytics.trackEvent('generation_started', { decadeCount: DECADES.length });
         setIsLoading(true);
         setAppState('generating');
-        
+
         const initialImages: Record<string, GeneratedImage> = {};
         DECADES.forEach(decade => {
             initialImages[decade] = { status: 'pending' };
@@ -138,7 +138,7 @@ function App() {
         if (generatedImages[decade]?.status === 'pending') {
             return;
         }
-        
+
         analytics.trackRegenerateImage(decade);
         console.log(`Regenerating image for ${decade}...`);
 
@@ -163,7 +163,7 @@ function App() {
             console.error(`Failed to regenerate image for ${decade}:`, err);
         }
     };
-    
+
     const handleReset = () => {
         setUploadedImage(null);
         setGeneratedImages({});
@@ -188,7 +188,7 @@ function App() {
             alert("Please wait for at least one image to finish generating.");
         }
     };
-    
+
     const handlePaymentSuccess = useCallback(async (email: string) => {
         if (!paymentRequest) return;
         if (!email) {
@@ -196,7 +196,7 @@ function App() {
             setPaymentRequest(null);
             return;
         }
-        
+
         // Update user email with the one from checkout
         setUserEmail(email);
 
@@ -222,7 +222,7 @@ function App() {
                     .filter(([, image]: [string, GeneratedImage]) => image.status === 'done' && image.url)
                     .reduce((acc, [decade, image]: [string, GeneratedImage]) => {
                         if (image.url) {
-                          acc[decade] = image.url;
+                            acc[decade] = image.url;
                         }
                         return acc;
                     }, {} as Record<string, string>);
@@ -276,7 +276,7 @@ function App() {
         setUploadedImage(preUploadedImage);
         setAppState('image-uploaded');
     }
-    
+
     if (!PAYPAL_CLIENT_ID) {
         return (
             <main className="bg-vintage-paper text-brand-brown min-h-screen w-full flex flex-col items-center justify-center p-4">
@@ -309,28 +309,28 @@ function App() {
                 <div className="z-10 flex flex-col items-center justify-center w-full h-full flex-1 min-h-0 container mx-auto">
                     <AnimatePresence mode="wait">
                         {appState === 'new-landing' && (
-                             <motion.div
+                            <motion.div
                                 key="new-landing"
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.5 }}
                                 className="w-full"
-                             >
+                            >
                                 <NewLandingPage onGetStarted={handleGetStarted} onPreviewPurchase={handlePreviewPurchase} />
-                             </motion.div>
+                            </motion.div>
                         )}
-                         {appState === 'privacy-policy' && (
-                             <motion.div
+                        {appState === 'privacy-policy' && (
+                            <motion.div
                                 key="privacy"
                                 initial={{ opacity: 0, x: 100 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -100 }}
                                 transition={{ duration: 0.5 }}
                                 className="w-full"
-                             >
+                            >
                                 <PrivacyPolicy onBack={handleBackToNewLanding} />
-                             </motion.div>
+                            </motion.div>
                         )}
                         {appState !== 'new-landing' && appState !== 'privacy-policy' && (
                             <motion.div
@@ -374,7 +374,7 @@ function App() {
                                                 </div>
                                             </label>
                                             <input id="file-upload" type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={handleImageUpload} />
-                                            
+
                                             <div className="mt-8 bg-brand-blue/5 rounded-lg p-6 w-full">
                                                 <h4 className="font-body font-bold text-brand-brown mb-3 flex items-center gap-2">
                                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -413,19 +413,19 @@ function App() {
                                             transition={{ duration: 0.5 }}
                                             className="flex flex-col items-center gap-6"
                                         >
-                                             <PolaroidCard 
-                                                imageUrl={uploadedImage} 
-                                                caption="Your Photo" 
+                                            <PolaroidCard
+                                                imageUrl={uploadedImage}
+                                                caption="Your Photo"
                                                 status="done"
-                                             />
-                                             <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+                                            />
+                                            <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
                                                 <button onClick={handleReset} className={secondaryButtonClasses}>
                                                     Different Photo
                                                 </button>
                                                 <button onClick={handleGenerateClick} className={primaryButtonClasses}>
                                                     Generate
                                                 </button>
-                                             </div>
+                                            </div>
                                         </motion.div>
                                     )}
 
@@ -439,13 +439,13 @@ function App() {
                                         >
                                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
                                                 {DECADES.map((decade, index) => (
-                                                     <motion.div
+                                                    <motion.div
                                                         key={decade}
                                                         initial={{ opacity: 0, scale: 0.8, y: 50 }}
                                                         animate={{ opacity: 1, scale: 1, y: 0 }}
                                                         transition={{ type: 'spring', stiffness: 100, damping: 20, delay: index * 0.1 }}
-                                                     >
-                                                         <PolaroidCard
+                                                    >
+                                                        <PolaroidCard
                                                             caption={decade}
                                                             status={generatedImages[decade]?.status || 'pending'}
                                                             imageUrl={generatedImages[decade]?.url}
@@ -458,11 +458,11 @@ function App() {
                                                     </motion.div>
                                                 ))}
                                             </div>
-                                             <div className="h-20 mt-8 flex items-center justify-center">
+                                            <div className="h-20 mt-8 flex items-center justify-center">
                                                 {appState === 'results-shown' && (
-                                                        <div className="flex flex-col sm:flex-row items-center gap-4">
-                                                        <button 
-                                                            onClick={handleDownloadAlbum} 
+                                                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                                                        <button
+                                                            onClick={handleDownloadAlbum}
                                                             className={`${primaryButtonClasses} disabled:opacity-50 disabled:cursor-not-allowed`}
                                                         >
                                                             Get Album by Email
@@ -482,7 +482,7 @@ function App() {
                 </div>
                 {appState !== 'new-landing' && appState !== 'privacy-policy' && <Footer />}
                 <FullscreenModal imageUrl={fullscreenImage} onClose={handleCloseFullscreen} />
-                <PaymentModal 
+                <PaymentModal
                     request={paymentRequest}
                     onClose={handleClosePaymentModal}
                     onPaymentSuccess={handlePaymentSuccess}

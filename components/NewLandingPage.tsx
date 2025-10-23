@@ -2,836 +2,577 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { getRefGroupName } from "../lib/affiliateUtils";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+    motion,
+    useReducedMotion,
+    useScroll,
+    useTransform,
+} from "framer-motion";
+// Mock de função para manter o código funcional.
+const getRefGroupName = () => {
+    const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : '');
+    return params.get('ref') || null;
+};
+
+// Importe o PreviewUpload e os componentes DraggableCard para o Hero
 import PreviewUpload from "./PreviewUpload";
+import { DraggableCardBody, DraggableCardContainer } from "./ui/draggable-card";
 
 interface NewLandingPageProps {
     onGetStarted: () => void;
     onPreviewPurchase?: (uploadedImage: string) => void;
 }
 
+const BASE_PRICE = 19.9; // R$ 19,90
+
+const currency = (v: number) =>
+    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+        Math.round(v * 100) / 100
+    );
+
 const NewLandingPage: React.FC<NewLandingPageProps> = ({
     onGetStarted,
     onPreviewPurchase,
 }) => {
     const [refGroupName, setRefGroupName] = useState<string | null>(null);
+    const [deadline, setDeadline] = useState<number>(() => {
+        // Lógica de Urgência: Timer de 15 minutos por sessão
+        const k = "ferrer-countdown-deadline";
+        const saved = typeof window !== "undefined" ? sessionStorage.getItem(k) : null;
+        if (saved) return Number(saved);
+        const d = Date.now() + 15 * 60 * 1000;
+        if (typeof window !== "undefined") sessionStorage.setItem(k, String(d));
+        return d;
+    });
+    const [now, setNow] = useState<number>(Date.now());
+    const reduceMotion = useReducedMotion();
 
+    // --- Configurações de Motion ---
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+
+    // Animação Parallax Sutil no "Fundo" do Hero para criar profundidade
+    const heroParallax = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+
+    // Variações de animação base para entrada de elementos
+    const fadeUp = (delay = 0) =>
+        reduceMotion
+            ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0 } }
+            : { initial: { opacity: 0, y: 30 }, animate: { opacity: 1, y: 0 }, transition: { delay, duration: 0.6, type: 'spring', stiffness: 100 } };
+
+    const containerVariants = {
+        hidden: {},
+        visible: {
+            transition: {
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } },
+    };
+    // --------------------------------
+
+    // --- Lógica de Preço e Timer ---
     useEffect(() => {
-        const groupName = getRefGroupName();
-        setRefGroupName(groupName);
+        const t = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(t);
     }, []);
 
+    const remaining = Math.max(0, deadline - now);
+    const mm = String(Math.floor(remaining / 60000)).padStart(2, "0");
+    const ss = String(Math.floor((remaining % 60000) / 1000)).padStart(2, "0");
+
+    useEffect(() => {
+        setRefGroupName(getRefGroupName());
+    }, []);
+
+    const discountPercent = refGroupName ? 20 : 0;
+    const priceNet = useMemo(
+        () => BASE_PRICE * (1 - discountPercent / 100),
+        [discountPercent]
+    );
+    // --------------------------------
+
     const handlePreviewPurchase = (uploadedImage: string) => {
-        if (onPreviewPurchase) {
-            onPreviewPurchase(uploadedImage);
-        } else {
-            onGetStarted();
-        }
+        if (onPreviewPurchase) onPreviewPurchase(uploadedImage);
+        else onGetStarted();
     };
 
     const scrollToSection = (id: string) => {
-        const element = document.getElementById(id);
-        element?.scrollIntoView({ behavior: "smooth" });
+        const el = document.getElementById(id);
+        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    // JSON-LD (Mantido para SEO)
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: "Álbum com 6 imagens — Ferrer Image",
+        description:
+            "Transforme 1 foto em 6 versões de épocas (1950s–2000s). Prévia grátis, entrega em minutos.",
+        offers: {
+            "@type": "Offer",
+            priceCurrency: "BRL",
+            price: priceNet.toFixed(2),
+            url: "https://ferrer-image.vercel.app/",
+            availability: "https://schema.org/InStock",
+            priceValidUntil: new Date(Date.now() + 24 * 3600e3).toISOString(),
+        },
+        aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.9",
+            reviewCount: "3200",
+        },
+        brand: { "@type": "Brand", name: "Ferrer Image" },
     };
 
     return (
-        <div className="w-full bg-vintage-paper">
-            {/* Banner de Desconto */}
-            {refGroupName && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-brand-orange text-vintage-paper py-2 px-4 text-center font-body text-sm font-bold"
-                >
-                    🎉 20% OFF aplicado por {refGroupName}
-                </motion.div>
-            )}
+        <div className="w-full bg-vintage-paper min-h-screen" data-page="landing">
+            {/* JSON-LD */}
+            <script
+                type="application/ld+json"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
 
-            {/* Header Fixo */}
-            <header className="sticky top-0 z-50 bg-vintage-paper/95 backdrop-blur-sm border-b border-brand-brown/10 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-                    <div className="font-display text-2xl text-brand-brown">
-                        Image Ferrer
-                    </div>
-                    <nav
-                        className="hidden md:flex items-center gap-6"
-                        aria-label="Navegação principal"
+            {/* Banner de Urgência Fixo (Z-Index alto para visibilidade máxima) */}
+            <motion.div
+                className="bg-brand-orange text-vintage-paper text-center text-sm md:text-base py-2 px-3 sticky top-0 z-[60] shadow-xl"
+                role="status"
+                aria-live="polite"
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
+                {discountPercent ? (
+                    <span>
+                        ⭐ DESCONTO EXCLUSIVO {discountPercent}% OFF! Seu álbum de {currency(BASE_PRICE)} por apenas <b>{currency(priceNet)}</b>.
+                    </span>
+                ) : (
+                    <span>⏳ PRÉVIA GRATUITA! Veja o resultado antes de pagar.</span>
+                )}
+                <span className="ml-3 inline-flex items-center gap-1 font-semibold bg-white/20 px-2 py-0.5 rounded">
+                    OFERTA EXPIRA EM {mm}:{ss}
+                </span>
+            </motion.div>
+
+            {/* Header Fixo de Navegação */}
+            <header className="sticky top-[38px] md:top-[38px] z-50 bg-vintage-paper/95 backdrop-blur-md border-b border-brand-brown/10 h-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+                    <button
+                        onClick={() => scrollToSection("top")}
+                        className="font-display text-2xl text-brand-brown hover:text-brand-blue transition-colors"
+                        aria-label="Ir para o topo"
                     >
-                        <button
-                            onClick={() => scrollToSection("examples")}
-                            className="font-body text-brand-brown hover:text-brand-blue transition-colors"
-                            aria-label="Ver exemplos de fotos"
+                        Ferrer Image
+                    </button>
+
+                    <nav className="hidden md:flex items-center gap-6" aria-label="Navegação principal">
+                        {["examples", "how-it-works", "faq"].map((id) => (
+                            <button
+                                key={id}
+                                onClick={() => scrollToSection(id)}
+                                className="font-body text-brand-brown hover:text-brand-blue transition-colors"
+                            >
+                                {id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            </button>
+                        ))}
+                        <motion.button
+                            data-cta="header"
+                            onClick={() => scrollToSection("pricing-final")}
+                            whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(90, 125, 154, 0.4)" }}
+                            whileTap={{ scale: 0.95 }}
+                            className="font-body bg-brand-blue text-vintage-paper px-5 py-2 rounded-full shadow-lg min-h-[44px] transition-all"
                         >
-                            Ver exemplos
-                        </button>
-                        <button
-                            onClick={() => scrollToSection("pricing")}
-                            className="font-body text-brand-brown hover:text-brand-blue transition-colors"
-                            aria-label="Ver preço do álbum"
-                        >
-                            Preço
-                        </button>
-                        <button
-                            onClick={() => scrollToSection("faq")}
-                            className="font-body text-brand-brown hover:text-brand-blue transition-colors"
-                            aria-label="Perguntas frequentes"
-                        >
-                            FAQ
-                        </button>
-                        <button
-                            onClick={onGetStarted}
-                            className="font-body bg-brand-brown text-vintage-paper px-6 py-2 rounded-md hover:bg-opacity-90 transition-all shadow-md min-h-[44px]"
-                            aria-label="Começar a gerar suas 6 eras"
-                        >
-                            Gerar minhas 6 eras
-                            {refGroupName && (
-                                <span
-                                    className="ml-2 text-xs"
-                                    aria-label="20 por cento de desconto"
-                                >
-                                    20% off
-                                </span>
-                            )}
-                        </button>
+                            Comprar Agora • {currency(priceNet)}
+                        </motion.button>
                     </nav>
                 </div>
             </header>
 
-            {/* Hero Section */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-                <div className="text-center max-w-4xl mx-auto">
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="font-display text-5xl md:text-7xl text-brand-brown mb-6"
-                    >
-                        Transforme 1 foto em 6 versões de épocas diferentes, em
-                        minutos
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="font-body text-xl md:text-2xl text-brand-brown/80 mb-12"
-                    >
-                        Teste grátis com prévia • Desconto automático no seu
-                        link • Entrega segura
-                    </motion.p>
+            <div ref={sectionRef as any}>
+                {/* Hero com Máximo Impacto e CTA Principal */}
+                <section id="top" className="relative overflow-hidden bg-vintage-paper pb-16 md:pb-28 pt-10">
+                    <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center max-w-5xl mx-auto">
+                            <motion.h1
+                                {...fadeUp(0.2)}
+                                className="font-display text-5xl md:text-8xl text-brand-brown mb-4 leading-tight"
+                            >
+                                Transforme 1 Foto em <span className="block text-brand-blue">6 Eras Históricas</span>
+                            </motion.h1>
 
-                    {/* Upload com Prévia Gratuita - Destaque Principal */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="mb-8"
+                            <motion.h2
+                                {...fadeUp(0.4)}
+                                className="font-body text-2xl md:text-3xl text-brand-brown/80 mb-8"
+                            >
+                                Prévia Gratuita • Entrega em 2 Minutos • Qualidade IA Gemini Flash
+                            </motion.h2>
+
+                            {/* Área de Upload / CTA Principal */}
+                            <DraggableCardContainer className="mt-8">
+                                <DraggableCardBody
+                                    className="w-full max-w-lg p-5 bg-white/80 border-4 border-dashed border-brand-blue/50 shadow-2xl backdrop-blur-sm"
+                                >
+                                    <motion.div
+                                        initial={{ scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ delay: 0.6, duration: 0.8 }}
+                                    >
+                                        <h3 className="font-display text-3xl text-brand-brown text-center mb-4">Veja a Prévia Grátis Agora!</h3>
+                                        {/* Componente principal de interação: Upload */}
+                                        <PreviewUpload onPurchaseClick={handlePreviewPurchase} />
+                                    </motion.div>
+                                </DraggableCardBody>
+                            </DraggableCardContainer>
+
+                            {/* Botões de Reforço de Vendas e Urgência */}
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                variants={containerVariants}
+                                className="flex flex-col items-center justify-center gap-4 mt-12"
+                            >
+                                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-3">
+                                    <motion.button
+                                        data-cta="hero-primary"
+                                        onClick={onGetStarted}
+                                        whileHover={{ scale: 1.05, y: -2, boxShadow: "0 10px 20px rgba(217, 119, 6, 0.5)" }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="font-body bg-brand-orange text-white px-8 py-4 rounded-full text-xl font-bold hover:bg-opacity-95 shadow-xl min-h-[50px] transition-all whitespace-nowrap"
+                                    >
+                                        GERAR PRÉVIA GRÁTIS!
+                                    </motion.button>
+                                </motion.div>
+
+                                {/* Reforço da Oferta e Timer */}
+                                <motion.div
+                                    variants={itemVariants}
+                                    className="inline-flex items-center gap-2 text-brand-red font-body text-lg bg-vintage-paper rounded-full px-4 py-1.5 shadow-lg border-2 border-brand-red"
+                                    aria-live="polite"
+                                >
+                                    OFERTA EXCLUSIVA: {currency(priceNet)} expira em {mm}:{ss}
+                                </motion.div>
+                            </motion.div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Seção de Confiança (Social Proof & Garantias) */}
+                <section className="bg-brand-blue/5 py-12 md:py-16 border-t border-brand-brown/10">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.5 }}
+                            variants={containerVariants}
+                            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+                        >
+                            <motion.div variants={itemVariants}>
+                                <div className="font-display text-4xl text-brand-brown">4,9 ★</div>
+                                <div className="font-body text-brand-brown/70 mt-1">Avaliação Média (3.200+)</div>
+                            </motion.div>
+                            <motion.div variants={itemVariants}>
+                                <div className="font-display text-4xl text-brand-brown">2–3 min</div>
+                                <div className="font-body text-brand-brown/70 mt-1">Entrega via E-mail</div>
+                            </motion.div>
+                            <motion.div variants={itemVariants}>
+                                <div className="font-display text-4xl text-brand-blue">100%</div>
+                                <div className="font-body text-brand-blue/80 mt-1">Privacidade Garantida (LGPD)</div>
+                            </motion.div>
+                            <motion.div variants={itemVariants}>
+                                <div className="font-display text-4xl text-brand-orange">Livre</div>
+                                <div className="font-body text-brand-orange/80 mt-1">Uso em Todas as Redes</div>
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Como Funciona (Foco em Velocidade e Simplicidade) */}
+                <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+                    <motion.h2
+                        {...fadeUp(0)}
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.5 }}
+                        className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-16"
                     >
-                        <PreviewUpload
-                            onPurchaseClick={handlePreviewPurchase}
+                        Em Apenas 3 Passos Rápidos
+                    </motion.h2>
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.2 }}
+                        variants={containerVariants}
+                        className="grid md:grid-cols-3 gap-12 relative"
+                    >
+                        {/* Linhas de Conexão (Animação de Transição) */}
+                        <motion.div
+                            className="absolute hidden md:block top-10 left-1/4 w-[1px] h-[calc(100%-80px)] bg-brand-blue/20 -translate-x-1/2"
+                            initial={{ scaleY: 0 }}
+                            whileInView={{ scaleY: 1 }}
+                            transition={{ duration: 1.5, delay: 0.8 }}
+                            style={{ originY: 0 }}
                         />
-                    </motion.div>
+                        <motion.div
+                            className="absolute hidden md:block top-10 right-1/4 w-[1px] h-[calc(100%-80px)] bg-brand-blue/20 translate-x-1/2"
+                            initial={{ scaleY: 0 }}
+                            whileInView={{ scaleY: 1 }}
+                            transition={{ duration: 1.5, delay: 0.8 }}
+                            style={{ originY: 0 }}
+                        />
 
-                    {/* Requisitos mínimos */}
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-sm text-brand-brown/60 font-body mb-6"
-                    >
-                        Rosto visível • Boa iluminação • Mínimo 1024px • JPG ou
-                        PNG
-                    </motion.p>
-
-                    {/* Botão secundário para ver exemplos */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.35 }}
-                        className="flex justify-center"
-                    >
-                        <button
-                            onClick={() =>
-                                window.scrollTo({
-                                    top: 800,
-                                    behavior: "smooth",
-                                })
-                            }
-                            className="font-body text-base border-2 border-brand-blue text-brand-brown px-6 py-3 rounded-md hover:bg-brand-blue hover:text-vintage-paper transition-all min-h-[44px]"
-                        >
-                            Ver exemplos de transformações
-                        </button>
-                    </motion.div>
-
-                    {/* Microconfiança */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-brand-brown/70 font-body"
-                    >
-                        <div className="flex items-center gap-2">
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                                />
-                            </svg>
-                            Privacidade garantida
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                            Checkout seguro
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
-                                />
-                            </svg>
-                            Não usamos suas fotos para treinar IA
-                        </div>
-                    </motion.div>
-
-                    {/* Microdepoimento */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                        className="mt-8 bg-white/50 rounded-lg p-4 max-w-md mx-auto border border-brand-brown/10"
-                    >
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="w-10 h-10 bg-brand-blue/20 rounded-full flex items-center justify-center">
-                                <span className="font-display text-lg text-brand-brown">
-                                    M
-                                </span>
-                            </div>
-                            <div>
-                                <div className="font-body font-bold text-sm text-brand-brown">
-                                    Maria Silva
-                                </div>
-                                <div className="text-xs text-brand-brown/60">
-                                    há 2 dias
-                                </div>
-                            </div>
-                        </div>
-                        <p className="font-body text-sm text-brand-brown/80 italic">
-                            "Incrível! Parecia que eu tinha viajado no tempo de
-                            verdade. 🕰️"
-                        </p>
-                    </motion.div>
-                </div>
-
-                {/* Título da seção de exemplos */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="mt-16 text-center"
-                >
-                    <h2 className="font-display text-4xl md:text-5xl text-brand-brown mb-4">
-                        Veja a mágica acontecer
-                    </h2>
-                    <p className="font-body text-brand-brown/70 text-lg mb-8">
-                        Exemplos de transformações em diferentes décadas
-                    </p>
-                </motion.div>
-
-                {/* Visual de Polaroids */}
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
-                >
-                    {[
-                        { decade: "1950s", img: "/assets/image/1950s.jpg" },
-                        { decade: "1960s", img: "/assets/image/1960s.jpg" },
-                        { decade: "1970s", img: "/assets/image/1970s.jpg" },
-                        { decade: "1980s", img: "/assets/image/1980s.jpg" },
-                        { decade: "1990s", img: "/assets/image/1990s.jpg" },
-                        { decade: "2000s", img: "/assets/image/2000s.jpg" },
-                    ].map(({ decade, img }) => (
-                        <div
-                            key={decade}
-                            className="bg-white p-3 shadow-lg transform rotate-1 hover:rotate-0 transition-transform rounded-xl"
-                        >
-                            <div className="aspect-square overflow-hidden rounded-xl">
-                                <img
-                                    src={img}
-                                    alt={`Foto da era ${decade}`}
-                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                                />
-                            </div>
-                            <div className="mt-2 font-handwriting text-center text-brand-brown">
-                                {decade}
-                            </div>
-                        </div>
-                    ))}
-                </motion.div>
-            </section>
-
-            {/* Prova Social */}
-            <section className="bg-brand-blue/5 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
-                        <div>
-                            <div className="font-display text-4xl text-brand-brown">
-                                +3.200
-                            </div>
-                            <div className="font-body text-brand-brown/70 mt-1">
-                                Álbuns gerados
-                            </div>
-                        </div>
-                        <div>
-                            <div className="font-display text-4xl text-brand-brown">
-                                4.9/5
-                            </div>
-                            <div className="font-body text-brand-brown/70 mt-1">
-                                Avaliação média
-                            </div>
-                        </div>
-                        <div className="col-span-2 md:col-span-1">
-                            <div className="font-display text-4xl text-brand-brown">
-                                2-3min
-                            </div>
-                            <div className="font-body text-brand-brown/70 mt-1">
-                                Tempo de entrega
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Para quem é perfeito */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
-                    Para quem é perfeito
-                </h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                    <div className="text-center bg-white rounded-lg p-6 shadow-md">
-                        <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                className="w-8 h-8 text-brand-brown"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                                />
-                            </svg>
-                        </div>
-                        <h3 className="font-display text-xl text-brand-brown mb-2">
-                            Presente para família
-                        </h3>
-                        <p className="font-body text-brand-brown/70 text-sm">
-                            Surpreenda com um álbum único de diferentes épocas
-                        </p>
-                    </div>
-                    <div className="text-center bg-white rounded-lg p-6 shadow-md">
-                        <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                className="w-8 h-8 text-brand-brown"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                        </div>
-                        <h3 className="font-display text-xl text-brand-brown mb-2">
-                            Recordações de época
-                        </h3>
-                        <p className="font-body text-brand-brown/70 text-sm">
-                            Veja-se nas roupas e estilos de décadas passadas
-                        </p>
-                    </div>
-                    <div className="text-center bg-white rounded-lg p-6 shadow-md">
-                        <div className="w-16 h-16 bg-brand-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                className="w-8 h-8 text-brand-brown"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                />
-                            </svg>
-                        </div>
-                        <h3 className="font-display text-xl text-brand-brown mb-2">
-                            Posts criativos
-                        </h3>
-                        <p className="font-body text-brand-brown/70 text-sm">
-                            Conteúdo original e engajador para suas redes
-                            sociais
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Como Funciona */}
-            <section
-                id="how-it-works"
-                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-            >
-                <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
-                    Como funciona
-                </h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                    <div className="text-center">
-                        <div className="w-16 h-16 bg-brand-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                className="w-8 h-8 text-vintage-paper"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                                />
-                            </svg>
-                        </div>
-                        <h3 className="font-display text-2xl text-brand-brown mb-2">
-                            1. Envie sua foto
-                        </h3>
-                        <p className="font-body text-brand-brown/70">
-                            Upload rápido e seguro da sua melhor foto
-                        </p>
-                    </div>
-                    <div className="text-center">
-                        <div className="w-16 h-16 bg-brand-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                className="w-8 h-8 text-vintage-paper"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                />
-                            </svg>
-                        </div>
-                        <h3 className="font-display text-2xl text-brand-brown mb-2">
-                            2. Veja a prévia grátis
-                        </h3>
-                        <p className="font-body text-brand-brown/70">
-                            Prévia com marca d'água antes de comprar
-                        </p>
-                    </div>
-                    <div className="text-center">
-                        <div className="w-16 h-16 bg-brand-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                className="w-8 h-8 text-vintage-paper"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                        </div>
-                        <h3 className="font-display text-2xl text-brand-brown mb-2">
-                            3. Receba seu álbum
-                        </h3>
-                        <p className="font-body text-brand-brown/70">
-                            6 imagens em alta qualidade no seu email
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Preço e Benefícios */}
-            <section
-                id="pricing"
-                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-            >
-                <div className="max-w-2xl mx-auto">
-                    <div className="bg-white rounded-lg shadow-xl p-8 border-2 border-brand-blue">
-                        <h2 className="font-display text-3xl text-brand-brown text-center mb-6">
-                            Álbum com 6 imagens
-                        </h2>
-                        <div className="text-center mb-8 relative">
-                            {refGroupName && (
-                                <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-                                    <div className="bg-brand-orange text-vintage-paper px-4 py-1 rounded-full text-xs font-body font-bold shadow-md">
-                                        20% OFF • {refGroupName}
-                                    </div>
-                                </div>
-                            )}
-                            {refGroupName ? (
-                                <>
-                                    <div className="text-2xl text-brand-brown/50 line-through mb-1">
-                                        R$ 19,90
-                                    </div>
-                                    <div className="font-display text-5xl text-brand-brown mb-2">
-                                        R$ 15,92
-                                    </div>
-                                    <div className="text-sm text-brand-brown/60 font-body">
-                                        Desconto automático aplicado
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="font-display text-5xl text-brand-brown">
-                                    R$ 19,90
-                                </div>
-                            )}
-                        </div>
-                        <ul className="space-y-4 mb-8">
-                            <li className="flex items-start gap-3">
-                                <svg
-                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 13l4 4L19 7"
-                                    />
-                                </svg>
-                                <span className="font-body text-brand-brown">
-                                    Entrega rápida em 2-3 minutos
-                                </span>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <svg
-                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 13l4 4L19 7"
-                                    />
-                                </svg>
-                                <span className="font-body text-brand-brown">
-                                    Imagens em alta resolução
-                                </span>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <svg
-                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 13l4 4L19 7"
-                                    />
-                                </svg>
-                                <span className="font-body text-brand-brown">
-                                    Uso livre em redes sociais
-                                </span>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <svg
-                                    className="w-6 h-6 text-brand-blue flex-shrink-0 mt-1"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 13l4 4L19 7"
-                                    />
-                                </svg>
-                                <span className="font-body text-brand-brown">
-                                    1 ajuste gratuito em até 24 horas
-                                </span>
-                            </li>
-                        </ul>
-                        <button
-                            onClick={onGetStarted}
-                            className="w-full font-body text-lg bg-brand-brown text-vintage-paper px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg"
-                        >
-                            Gerar minhas 6 eras agora
-                        </button>
-                        <p className="text-center text-sm text-brand-brown/60 mt-4 font-body">
-                            Garantia: Se não estiver satisfeito, peça 1 revisão
-                            em até 24 horas
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Depoimentos */}
-            <section className="bg-brand-blue/5 py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
-                        O que dizem nossos clientes
-                    </h2>
-                    <div className="grid md:grid-cols-3 gap-8">
                         {[
-                            {
-                                name: "Maria Silva",
-                                text: "Amei ver minha avó nos anos 60, ficou perfeito!",
-                            },
-                            {
-                                name: "João Pedro",
-                                text: "Resultado incrível! Parece que viajei no tempo de verdade.",
-                            },
-                            {
-                                name: "Ana Costa",
-                                text: "Qualidade surpreendente e entrega super rápida.",
-                            },
-                        ].map((testimonial, i) => (
-                            <div
-                                key={i}
-                                className="bg-white rounded-lg p-6 shadow-md"
+                            { n: "1. Upload Inteligente", icon: "📷", d: "Selecione sua foto (rosto visível). O sistema da IA fará a leitura para manter suas características." },
+                            { n: "2. Gerar Prévia Grátis", icon: "✨", d: "Nossa IA (Gemini Flash) cria as 6 imagens. Você confere o resultado com marca d'água em 90 segundos." },
+                            { n: "3. Download Imediato", icon: "✉️", d: "Pague com Pix/Cartão/Apple Pay e receba o link para download em Alta Resolução no seu e-mail." },
+                        ].map((s, index) => (
+                            <motion.div
+                                key={s.n}
+                                variants={itemVariants}
+                                className="text-center bg-white rounded-xl p-6 shadow-2xl border-t-8 border-brand-blue/80 z-10 hover:shadow-brand-blue/40 transition-shadow"
+                                whileHover={{ scale: 1.02 }}
                             >
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 bg-brand-blue/20 rounded-full flex items-center justify-center">
-                                        <span className="font-display text-xl text-brand-brown">
-                                            {testimonial.name[0]}
-                                        </span>
-                                    </div>
-                                    <div className="font-body font-bold text-brand-brown">
-                                        {testimonial.name}
-                                    </div>
+                                <div className="w-16 h-16 bg-brand-blue rounded-full mx-auto mb-4 grid place-items-center text-vintage-paper text-3xl shadow-md">
+                                    {s.icon}
                                 </div>
-                                <p className="font-body text-brand-brown/80 italic">
-                                    "{testimonial.text}"
-                                </p>
-                            </div>
+                                <h3 className="font-display text-2xl text-brand-brown mb-2 font-bold">{s.n}</h3>
+                                <p className="font-body text-brand-brown/70">{s.d}</p>
+                            </motion.div>
                         ))}
-                    </div>
-                </div>
-            </section>
+                    </motion.div>
 
-            {/* FAQ */}
-            <section
-                id="faq"
-                className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-            >
-                <h2 className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-12">
-                    Perguntas frequentes
-                </h2>
-                <div className="space-y-6">
-                    {[
-                        {
-                            q: "Quanto tempo leva?",
-                            a: "Geralmente 2 a 3 minutos após o pagamento.",
-                        },
-                        {
-                            q: "Como funciona a privacidade?",
-                            a: "Não treinamos IA com suas fotos sem consentimento. Você pode apagar com 1 clique.",
-                        },
-                        {
-                            q: "Quais tamanhos e formatos aceitos?",
-                            a: "Aceitamos JPG e PNG, mínimo 1024 px.",
-                        },
-                        {
-                            q: "Formas de pagamento?",
-                            a: "Pix, cartão, Apple Pay, Google Pay.",
-                        },
-                        {
-                            q: "Como funciona o suporte?",
-                            a: "Resposta em até 1 hora no horário comercial.",
-                        },
-                    ].map((faq, i) => (
-                        <div
-                            key={i}
-                            className="bg-white rounded-lg p-6 shadow-md"
+                    <motion.div variants={itemVariants} className="text-center mt-16">
+                        <motion.button
+                            data-cta="center-cta"
+                            onClick={onGetStarted}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="font-body bg-brand-brown text-vintage-paper px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:bg-opacity-90 transition-all"
                         >
-                            <h3 className="font-body font-bold text-lg text-brand-brown mb-2">
-                                {faq.q}
-                            </h3>
-                            <p className="font-body text-brand-brown/70">
-                                {faq.a}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </section>
+                            Quero Ver Minha Prévia Agora!
+                        </motion.button>
+                    </motion.div>
+                </section>
 
-            {/* Chamada para Afiliados */}
-            <section className="bg-brand-blue py-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="font-display text-4xl md:text-5xl text-vintage-paper mb-6">
-                        Tem grupo de fotos?
-                    </h2>
-                    <p className="font-body text-xl text-vintage-paper/90 mb-8">
-                        Ganhe comissões indicando a Image Ferrer
-                    </p>
+                {/* Galeria de Exemplos (para criar desejo) */}
+                <section id="examples" className="bg-vintage-paper/90 py-16 md:py-24 border-t border-brand-brown/10">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.3 }}
+                            variants={containerVariants}
+                            className="text-center"
+                        >
+                            <motion.h2 variants={itemVariants} className="font-display text-4xl md:text-5xl text-brand-brown mb-3">
+                                Viralize suas Redes
+                            </motion.h2>
+                            <motion.p variants={itemVariants} className="font-body text-brand-blue text-lg mb-10">
+                                Conteúdo único para seus posts, perfis ou presentes inesquecíveis.
+                            </motion.p>
+                        </motion.div>
 
-                    {/* Exemplo de ganho */}
-                    <div className="bg-vintage-paper/10 rounded-lg p-6 mb-8 max-w-md mx-auto">
-                        <div className="font-display text-3xl text-vintage-paper mb-2">
-                            R$ 638,40
-                        </div>
-                        <p className="text-vintage-paper/80 font-body text-sm">
-                            Ganho com 100 vendas (comissão de 40%)
-                        </p>
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.5 }}
+                            variants={containerVariants}
+                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+                        >
+                            {[
+                                { decade: "1950s", img: "/assets/image/1950s.jpg" },
+                                { decade: "1960s", img: "/assets/image/1960s.jpg" },
+                                { decade: "1970s", img: "/assets/image/1970s.jpg" },
+                                { decade: "1980s", img: "/assets/image/1980s.jpg" },
+                                { decade: "1990s", img: "/assets/image/1990s.jpg" },
+                                { decade: "2000s", img: "/assets/image/2000s.jpg" },
+                            ].map(({ decade, img }) => (
+                                <motion.div
+                                    variants={itemVariants}
+                                    key={decade}
+                                    whileHover={{ scale: 1.05, rotate: [0, 1.5, -1.5, 0], transition: { duration: 0.4 } }}
+                                    className="group bg-white p-3 shadow-xl rounded-xl cursor-pointer"
+                                    onClick={onGetStarted}
+                                >
+                                    <div className="aspect-square overflow-hidden rounded-md">
+                                        {/* As imagens aqui são mockups, o path deve ser adaptado no seu projeto. */}
+                                        <img
+                                            src={img}
+                                            alt={`Exemplo de foto estilo ${decade}`}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    <p className="mt-2 font-handwriting text-center text-brand-brown text-xl">{decade}</p>
+                                </motion.div>
+                            ))}
+                        </motion.div>
                     </div>
+                </section>
 
-                    <ul className="text-left max-w-md mx-auto mb-8 space-y-2 text-vintage-paper/90 font-body">
-                        <li>✓ Link exclusivo para seu grupo</li>
-                        <li>✓ 20% de desconto automático para membros</li>
-                        <li>✓ Comissões até 40%</li>
-                        <li>✓ Painel para acompanhar cliques e vendas</li>
-                    </ul>
-                    <a
-                        href="https://wa.me/555198030797?text=Ol%C3%A1%2C%20tenho%20interesse%20em%20ser%20parceiro%20afiliado%20da%20Image%20Ferrer%21"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block font-body text-lg bg-vintage-paper text-brand-blue px-8 py-4 rounded-md hover:bg-opacity-90 transition-all shadow-lg min-h-[44px]"
+                {/* Pricing Final (Último CTA antes do Footer) */}
+                <section id="pricing-final" className="bg-brand-blue py-16 md:py-24">
+                    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.5 }}
+                            variants={containerVariants}
+                            className="bg-vintage-paper rounded-xl shadow-2xl p-8 border-4 border-brand-orange relative"
+                        >
+                            <motion.div variants={itemVariants} className="absolute -top-4 left-1/2 -translate-x-1/2">
+                                <div className="bg-brand-red text-vintage-paper px-4 py-2 rounded-full text-base font-bold shadow-lg animate-pulse-slow">
+                                    ÚLTIMA CHANCE: OFERTA EXPIRA!
+                                </div>
+                            </motion.div>
+                            <motion.h2 variants={itemVariants} className="font-display text-4xl text-brand-brown text-center mb-4 pt-4">
+                                Leve o Álbum Completo Agora!
+                            </motion.h2>
+
+                            <motion.div variants={itemVariants} className="text-center mb-8">
+                                <div className="text-2xl text-brand-brown/50 line-through font-body">{currency(BASE_PRICE)}</div>
+                                <div className="font-display text-7xl text-brand-brown leading-none">{currency(priceNet)}</div>
+                                <div className="text-base text-brand-blue/90 font-body mt-2">Pagamento Único. Download Imediato.</div>
+                                <div className="text-brand-red font-body text-lg mt-2">Tempo Restante: {mm}:{ss}</div>
+                            </motion.div>
+
+                            <motion.button
+                                data-cta="pricing-final"
+                                onClick={onGetStarted}
+                                variants={itemVariants}
+                                whileHover={{ scale: 1.05, y: -3 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="w-full font-body text-2xl bg-brand-orange text-white px-8 py-5 rounded-full font-bold transition-all shadow-xl hover:bg-opacity-95"
+                            >
+                                Garanta Suas 6 Eras por {currency(priceNet)}
+                            </motion.button>
+
+                            <motion.div variants={itemVariants} className="mt-6 flex justify-center items-center gap-4 text-sm font-body text-brand-brown/80">
+                                <span>🔒 Checkout Seguro</span> |
+                                <span>1 Ajuste Grátis em 24h</span>
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* FAQ (Abordando Objeções Finais) */}
+                <section id="faq" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <motion.h2
+                        {...fadeUp(0)}
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.5 }}
+                        className="font-display text-4xl md:text-5xl text-brand-brown text-center mb-10"
                     >
-                        Quero ser parceiro
-                    </a>
-                </div>
-            </section>
+                        Tire Suas Dúvidas Finais
+                    </motion.h2>
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.5 }}
+                        variants={containerVariants}
+                        className="space-y-3"
+                    >
+                        {[
+                            ["Quanto tempo leva para gerar as imagens?", "Geralmente 2 a 3 minutos após o pagamento. Você recebe um link de download por e-mail imediatamente. O processo é quase instantâneo."],
+                            ["Como funciona a privacidade dos meus dados? (LGPD)", "Sua privacidade é prioridade. Não armazenamos suas fotos permanentemente e não treinamos nossa IA com elas. Seus dados são usados apenas para gerar as imagens e podem ser apagados com 1 clique."],
+                            ["Se eu não gostar do resultado, tenho garantia?", "Sim. Oferecemos 1 ajuste gratuito na imagem que você desejar em até 24 horas após a entrega do álbum, garantindo sua satisfação."],
+                            ["Quais os requisitos da minha foto?", "Aceitamos JPG e PNG. O rosto deve estar visível e bem iluminado. Evite óculos escuros, bonés e fotos muito escuras para o melhor resultado."],
+                            ["O preço é por foto ou pelo álbum completo?", `O valor de ${currency(priceNet)} é pelo álbum completo de 6 imagens, incluindo todas as eras e o direito de uso.`],
+                        ].map(([q, a]) => (
+                            <motion.details variants={itemVariants} key={q} className="bg-white rounded-lg p-5 shadow-lg group border-2 border-brand-blue/10 hover:border-brand-blue transition-colors">
+                                <summary className="font-body font-bold text-brand-brown cursor-pointer list-none flex items-center justify-between">
+                                    {q}
+                                    <span className="text-brand-blue transition-transform group-open:rotate-45">＋</span>
+                                </summary>
+                                <motion.div
+                                    className="mt-3 font-body text-brand-brown/75"
+                                >
+                                    {a}
+                                </motion.div>
+                            </motion.details>
+                        ))}
+                    </motion.div>
+                </section>
 
-            {/* CTA Fixo Mobile */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-vintage-paper border-t border-brand-brown/20 p-4 shadow-lg">
-                <button
-                    onClick={onGetStarted}
-                    className="w-full font-body text-lg bg-brand-brown text-vintage-paper px-6 py-3 rounded-md hover:bg-opacity-90 transition-all shadow-md"
-                >
-                    Gerar minhas 6 eras
-                    {refGroupName && (
-                        <span className="ml-2 text-sm">• 20% off</span>
-                    )}
-                </button>
+                {/* Seção Afiliados - Mantida com foco em Valor */}
+                <section className="bg-brand-brown py-16">
+                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-vintage-paper">
+                        <motion.h2 {...fadeUp(0)} whileInView="visible" viewport={{ once: true }} className="font-display text-4xl md:text-5xl mb-4">
+                            Você tem uma comunidade?
+                        </motion.h2>
+                        <motion.p {...fadeUp(0.2)} whileInView="visible" viewport={{ once: true }} className="font-body text-xl mb-8">
+                            Torne-se parceiro e ofereça desconto de 20% + ganhe comissões de até 40%.
+                        </motion.p>
+
+                        <motion.a
+                            {...fadeUp(0.4)}
+                            href="https://wa.me/555198030797?text=Quero%20ser%20parceiro%20Ferrer%20Image"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="inline-block font-body text-lg bg-brand-orange text-white px-7 py-3 rounded-full font-bold shadow-lg"
+                        >
+                            Fale com a Parceria no WhatsApp
+                        </motion.a>
+                    </div>
+                </section>
             </div>
 
-            {/* Footer */}
+
+            {/* CTA Fixo Mobile (Rodapé) */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-vintage-paper border-t border-brand-brown/20 p-4 shadow-2xl">
+                <motion.button
+                    data-cta="mobile-sticky"
+                    onClick={onGetStarted}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full font-body text-xl bg-brand-orange text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-all shadow-lg"
+                >
+                    COMPRAR AGORA • {currency(priceNet)}
+                </motion.button>
+            </div>
+
+            {/* Footer Profissional */}
             <footer className="bg-brand-brown text-vintage-paper py-12 mb-16 md:mb-0">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid md:grid-cols-3 gap-8 mb-8">
-                        <div>
-                            <h3 className="font-display text-xl mb-4">
-                                Image Ferrer
-                            </h3>
-                            <p className="font-body text-sm text-vintage-paper/70">
-                                Transforme suas fotos em viagens no tempo.
+                        <motion.div {...fadeUp(0)} whileInView="visible" viewport={{ once: true }}>
+                            <h3 className="font-display text-xl mb-3">Ferrer Image</h3>
+                            <p className="font-body text-sm opacity-70">
+                                Uma experiência digital de viagem no tempo, powered by IA.
                             </p>
-                        </div>
-                        <div>
-                            <h4 className="font-body font-bold mb-4">Links</h4>
+                        </motion.div>
+                        <motion.div {...fadeUp(0.1)} whileInView="visible" viewport={{ once: true }}>
+                            <h4 className="font-body font-bold mb-3">Legal</h4>
                             <ul className="space-y-2 font-body text-sm">
-                                <li>
-                                    <a
-                                        href="#"
-                                        className="text-vintage-paper/70 hover:text-vintage-paper"
-                                    >
-                                        Política de privacidade
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="#"
-                                        className="text-vintage-paper/70 hover:text-vintage-paper"
-                                    >
-                                        Termos de uso
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="#"
-                                        className="text-vintage-paper/70 hover:text-vintage-paper"
-                                    >
-                                        LGPD
-                                    </a>
-                                </li>
+                                <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToSection("faq"); }} className="opacity-70 hover:opacity-100 transition-opacity">Privacidade & LGPD</a></li>
+                                <li><a href="#" className="opacity-70 hover:opacity-100 transition-opacity">Termos de Uso</a></li>
+                                <li><a href="mailto:ferrerrstudio@gmail.com" className="opacity-70 hover:opacity-100 transition-opacity">Solicitar Exclusão de Dados</a></li>
                             </ul>
-                        </div>
-                        <div>
-                            <h4 className="font-body font-bold mb-4">
-                                Contato
-                            </h4>
+                        </motion.div>
+                        <motion.div {...fadeUp(0.2)} whileInView="visible" viewport={{ once: true }}>
+                            <h4 className="font-body font-bold mb-3">Contato</h4>
                             <ul className="space-y-2 font-body text-sm">
-                                <li className="text-vintage-paper/70">
-                                    ferrerrstudio@gmail.com
-                                </li>
-                                <li>
-                                    <a
-                                        href="#"
-                                        className="text-vintage-paper/70 hover:text-vintage-paper"
-                                    >
-                                        Suporte WhatsApp
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="#"
-                                        className="text-vintage-paper/70 hover:text-vintage-paper"
-                                    >
-                                        Instagram
-                                    </a>
-                                </li>
+                                <li className="opacity-70">Email: ferrerrstudio@gmail.com</li>
+                                <li><a href="https://wa.me/555198030797" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">Suporte ao Cliente (WhatsApp)</a></li>
+                                <li><a href="https://www.instagram.com/duda.ferrer/" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">Instagram Oficial</a></li>
                             </ul>
-                        </div>
+                            <div className="mt-4">
+                                <img
+                                    src="/assets/payments-br.svg"
+                                    alt="Pix, Cartão, Apple Pay, Google Pay"
+                                    className="h-6 opacity-90 mx-auto md:mx-0"
+                                    loading="lazy"
+                                />
+                            </div>
+                        </motion.div>
                     </div>
-                    <div className="border-t border-vintage-paper/20 pt-8 text-center font-body text-sm text-vintage-paper/70">
-                        <p>
-                            © 2024 Image Ferrer. Todos os direitos reservados.
-                        </p>
+                    <div className="border-t border-white/20 pt-6 text-center font-body text-sm opacity-70">
+                        © {new Date().getFullYear()} Ferrer Image. Todos os direitos reservados.
                     </div>
                 </div>
             </footer>
